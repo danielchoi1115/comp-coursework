@@ -8,7 +8,7 @@ from collections import Counter
 
 
 def standardize_dataset(input_array):
-    return (input_array - mean(input_array, axis=0)) / std(input_array, axis=0, ddof=1)
+    return (input_array - mean(input_array, axis=0)/std(input_array, axis=0, ddof=1))
 
 
 class KNNClassifier:
@@ -25,21 +25,12 @@ class KNNClassifier:
     def find_k_nearest_neighbor_labels(self, X_test):
         euclidean_distances = self.calculate_euclidean_distance(X_test)
         sorted_index_array = np.argsort(euclidean_distances)[:, :self.k]
-        # print(euclidean_distances[sorted_index_array].shape)
-        for index, i in enumerate(euclidean_distances):
-            if index == 91:
-                print('my model')
-                print("index:", np.argsort(i)[42:44])
-                print("distance:", euclidean_distances[91][np.argsort(i)[42:44]])
-                print('')
 
         return np.take(self.y_train, sorted_index_array)
 
     def predict(self, X_test):
         k_nearest_labels = self.find_k_nearest_neighbor_labels(X_test)
         a = [Counter(label).most_common(1)[0][0] for label in k_nearest_labels]
-
-        # print(Counter(k_nearest_labels[91]).most_common(2))
         return np.array(a)
 
 
@@ -82,6 +73,6 @@ if __name__ == "__main__":
 
     a = KNNClassifier(5)
     a.fit(X_train, y_train)
-    print(a.calculate_euclidean_distance(X_test).shape)
-    print(a.find_k_nearest_neighbor_labels(X_test).shape)
-    print(a.predict(X_test).shape)
+    # print(a.calculate_euclidean_distance(X_test).shape)
+    # print(a.find_k_nearest_neighbor_labels(X_test).shape)
+    # print(a.predict(X_test).shape)
