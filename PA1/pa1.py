@@ -11,14 +11,14 @@ if __name__ == "__main__":
     test = np.loadtxt("D:/HKUST/COMP2211/PA1/heart_disease_test_dataset.csv", delimiter=',', skiprows=1)
 
     # All except the last column.
-    X_train, y_train = train[:, :-1], train[:, -1]
-    X_test, y_test = test[:, :-1], test[:, -1]
+    X_train, y_train = standardize_dataset(train[:, :-1]), train[:, -1]
+    X_test, y_test = standardize_dataset(test[:, :-1]), test[:, -1]
 
     # iris = datasets.load_iris()
     # X, y = iris.data, iris.target
     # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1342)
 
-    for k in range(43, 44):
+    for k in range(3, 300, 2):
         knn = KNNClassifier(k)
         knn.fit(X_train, y_train)
         y_pred = knn.predict(X_test)
@@ -38,10 +38,10 @@ if __name__ == "__main__":
         # for i in ind:
         #     print(i)
 
-        print('sklearn Lib')
-        print("index:",ind[91][42:44])
-        print("distance",dist[91][42:44])
-        print('')
+        # print('sklearn Lib')
+        # print("index:",ind[91][42:44])
+        # print("distance",dist[91][42:44])
+        # print('')
         c = calculate_accuracy_score(y_pred, y_test)
         d = calculate_MCC_score(y_pred, y_test)
 

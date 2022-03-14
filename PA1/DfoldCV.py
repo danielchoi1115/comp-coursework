@@ -54,22 +54,28 @@ test = np.loadtxt("D:/HKUST/COMP2211/PA1/heart_disease_test_dataset.csv", delimi
 D = 200
 k_list = [3, 5, 7, 9, 11]
 
-dfold_model = DFoldCV(X=X[:, :-1], y=X[:, -1], k_list=k_list, d=D)
+dfold_model = DFoldCV(X=standardize_dataset(X[:, :-1]), y=X[:, -1], k_list=k_list, d=D)
 print('Average Score of my model')
 print([np.average(score) for score in dfold_model.cross_validate()])
-# print(dfold_model.validate_best_k())
 
 score_list = []
 kf = KFold(n_splits=D, shuffle=False)
+
+_X = standardize_dataset(X[:, :-1])
+_y = X[:, -1]
 
 for k in k_list:
     model = KNeighborsClassifier(k)
     scores_for_k = []
     for train_index, test_index in kf.split(X):
-        X_train, y_train = X[train_index][:, :-1], X[train_index][:, -1]
-        X_test, y_test = X[test_index][:, :-1], X[test_index][:, -1]
+        X_train, y_train = _X[train_index], _y[train_index]
+        X_test, y_test = _X[test_index], _y[test_index]
+
         model.fit(X_train, y_train)
-        scores_for_k.append(matthews_corrcoef(y_test, model.predict(X_test)))
+        y_pred = model.predict(X_test)
+        matth = matthews_corrcoef(y_test, y_pred)
+
+        scores_for_k.append(matth)
 
     score_list.append(scores_for_k)
 print('')
@@ -85,15 +91,15 @@ print('Average Score of sklearn model')
 print(average)
 print(k_list[np.argsort(average)[-1]])
 
-X = np.loadtxt("D:/HKUST/COMP2211/PA1/heart_disease_train_dataset.csv", delimiter=',', skiprows=1)
-test = np.loadtxt("D:/HKUST/COMP2211/PA1/heart_disease_test_dataset.csv", delimiter=',', skiprows=1)
+# X = np.loadtxt("D:/HKUST/COMP2211/PA1/heart_disease_train_dataset.csv", delimiter=',', skiprows=1)
+# test = np.loadtxt("D:/HKUST/COMP2211/PA1/heart_disease_test_dataset.csv", delimiter=',', skiprows=1)
 
-for k in k_list:
-    model = KNeighborsClassifier(k)
-    X_train, X_test, y_train, y_test = train_test_split(X[:, :-1], X[:, -1], test_size=0.2, random_state=1342)
-    # X_train, y_train = standardize_dataset(X[:, :-1]), X[:, -1]
-    # X_test, y_test = standardize_dataset(test[:, :-1]), test[:, -1]
+# for k in k_list:
+#     model = KNeighborsClassifier(k)
+#     X_train, X_test, y_train, y_test = train_test_split(X[:, :-1], X[:, -1], test_size=0.2, random_state=1342)
+#     # X_train, y_train = standardize_dataset(X[:, :-1]), X[:, -1]
+#     # X_test, y_test = standardize_dataset(test[:, :-1]), test[:, -1]
 
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    print(k, round(accuracy_score(y_test, y_pred), 3), round(matthews_corrcoef(y_test, y_pred), 3))
+#     model.fit(X_train, y_train)
+#     y_pred = model.predict(X_test)
+#     print(k, round(accuracy_score(y_test, y_pred), 3), round(matthews_corrcoef(y_test, y_pred), 3))
