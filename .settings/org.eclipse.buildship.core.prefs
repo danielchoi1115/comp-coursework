@@ -1,11 +1,7 @@
 arguments=
 auto.sync=false
 build.scans.enabled=false
-<<<<<<< Upstream, based on branch 'master' of https://github.com/danielchoi1115/comp3111-t29-team-project-2022s.git
-connection.gradle.distribution=GRADLE_DISTRIBUTION(VERSION(7.4.1))
-=======
 connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
->>>>>>> ae63bec Add - added readme file
 connection.project.dir=
 eclipse.preferences.version=1
 gradle.user.home=
