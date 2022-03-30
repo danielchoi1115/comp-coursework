@@ -15,4 +15,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'Lab6'
+rootProject.name = 'COMP3111-lab6'
