@@ -1,0 +1,4 @@
+GLoVe Dataset and IMDB is used in this LAB
+
+glove.6B.100d.txt.gz
+imdb
