@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
+<VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="437.0" prefWidth="719.0">
       <children>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="350.0" prefWidth="719.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="411.0" prefWidth="711.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab fx:id="tabTaskZero" text="Task Zero">
                   <content>
@@ -37,7 +41,19 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="719.0">
                            <children>
                               <Label layoutX="79.0" layoutY="44.0" />
-                              <TextArea layoutX="14.0" layoutY="12.0" prefHeight="296.0" prefWidth="698.0" text="Task A1: Generate data tables showing the number of confirmed COVID-19 cases by country&#10;&#10;Input&#10;•&#9;Specify the date of interest&#10;•&#9;Specify the countries of interest&#10;&#10;Output&#10;•&#9;Label the data table with a proper title: &quot;Number of Confirmed COVID-19 Cases as of [Date of Interest]&quot;&#10;•&#9;Present data in 3 columns with proper headings of &quot;Country&quot;, &quot;Total Cases&quot;, and &quot;Total Cases (per 1M)&quot;&#10;•&#9;Present data for the countries of interest in rows&#10;&#10;" wrapText="true" />
+                              <TextArea layoutX="14.0" layoutY="12.0" prefHeight="360.0" prefWidth="688.0" wrapText="true" />
+                              <DatePicker fx:id="datePicker" layoutX="25.0" layoutY="40.0" prefHeight="22.0" prefWidth="199.0" />
+             
+                              <ListView fx:id="countryCheckBoxList" layoutX="25.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" />
+                              <Button fx:id="displaySelectedCountries" layoutX="25.0" layoutY="315.0" mnemonicParsing="false" onAction="#doDisplayCountries" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                              <Label layoutX="24.0" layoutY="85.0" text="Countries" />
+                              <Label layoutX="24.0" layoutY="22.0" text="Date" />
+                              <TableView fx:id="TableA" layoutX="244.0" layoutY="39.0" prefHeight="317.0" prefWidth="436.0" stylesheets="@table.css">
+                                 <columns>
+                                    <TableColumn fx:id="countryName" prefWidth="140.0" text="Country" />
+                                    <TableColumn fx:id="totalCases" prefWidth="138.0" text="Total Cases" />
+                                    <TableColumn fx:id="totalCasesPerM" prefWidth="156.0" text="Total Cases (Per 1M)" />
+                                 </columns></TableView>
                            </children>
                         </AnchorPane>
                     </content>

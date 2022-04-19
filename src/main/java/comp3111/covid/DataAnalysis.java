@@ -1,7 +1,17 @@
 package comp3111.covid;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import org.apache.commons.csv.*;
 import edu.duke.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 /**
@@ -106,5 +116,73 @@ public class DataAnalysis {
 			
 			return oReport;
 	 }
- 
+	 
+	 public static ArrayList<String> getCountries() {
+		 String dataset = "COVID_Dataset_v1.0.csv";
+		 ArrayList<String> countries = new ArrayList<>();
+		 for (CSVRecord rec : getFileParser(dataset)) {
+			 countries.add(rec.get("location"));
+		 }
+		 Set<String> listWithoutDuplicates = new LinkedHashSet<String>(countries);
+		 countries.clear();
+		 countries.addAll(listWithoutDuplicates);
+		 return countries;
+	 }
+	 
+	 public static ArrayList<LocalDate> getDates() {
+		 String dataset = "COVID_Dataset_v1.0.csv";
+		 ArrayList<String> dateStringList = new ArrayList<>();
+		 for (CSVRecord rec : getFileParser(dataset)) {
+			 dateStringList.add(rec.get("date"));
+		 }
+		 Set<String> listWithoutDuplicates = new LinkedHashSet<String>(dateStringList);
+		 dateStringList.clear();
+		 dateStringList.addAll(listWithoutDuplicates);
+		 
+		 ArrayList<LocalDate> dates = new ArrayList<>();
+         
+    	 for (String dateString : dateStringList) {
+    		 dates.add(stringToLocalDate(dateString));
+    	 }
+		 
+		 return dates;
+	 }
+	 
+	 public static LocalDate stringToLocalDate(String dateString) {
+		 return LocalDate.parse(dateString, DateTimeFormatter.ofPattern("M/d/yyyy"));
+	 }
+	 
+	 public static String formatNumberWithComma(String numberString) {
+		 try {
+			 // Check if it is integer
+			 int num = Integer.parseInt(numberString);
+			 return NumberFormat.getInstance().format(num);
+		 } catch (NumberFormatException e1) {
+			 try {
+			 // Try if it is double
+				 Double num = Double.parseDouble(numberString);
+				 DecimalFormat formatter = new DecimalFormat("#,###.00");
+				 return formatter.format(num);
+			 }
+			 catch (NumberFormatException e2) {
+				 System.out.println("Number Parsing Error: " + numberString);
+				 return "0";
+			 }
+		}
+	 }
+	 
+	 public static ObservableList<ConfirmedCase> getConfirmedCases(ArrayList<String> selectedCountries, LocalDate dateInput) {
+		 String dataset = "COVID_Dataset_v1.0.csv";
+		 ObservableList<ConfirmedCase> confirmedCaseList = FXCollections.observableArrayList();
+		 for (CSVRecord rec : getFileParser(dataset)) {
+			 String countryName = rec.get("location");
+			 if (selectedCountries.contains(countryName) && dateInput.isEqual(stringToLocalDate(rec.get("date")))) {
+				 String totalCases = formatNumberWithComma(rec.get("total_cases"));
+				 String totalCasesPerM	= formatNumberWithComma(rec.get("total_cases_per_million"));
+				 ConfirmedCase confirmedcase = new ConfirmedCase(countryName, totalCases, totalCasesPerM);
+				 confirmedCaseList.add(confirmedcase);
+			 }
+		 }
+		 return confirmedCaseList;
+	 }
 }
