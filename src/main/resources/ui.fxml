@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -13,12 +16,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
+<VBox prefHeight="679.0" prefWidth="1008.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
   <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="437.0" prefWidth="719.0">
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="536.0" prefWidth="1008.0">
       <children>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="411.0" prefWidth="711.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="516.0" prefWidth="997.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab fx:id="tabTaskZero" text="Task Zero">
                   <content>
@@ -41,18 +45,17 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="719.0">
                            <children>
                               <Label layoutX="79.0" layoutY="44.0" />
-                              <TextArea layoutX="14.0" layoutY="12.0" prefHeight="360.0" prefWidth="688.0" wrapText="true" />
-                              <DatePicker fx:id="datePicker" layoutX="25.0" layoutY="40.0" prefHeight="22.0" prefWidth="199.0" />
+                              <DatePicker fx:id="tableA_datePicker" layoutX="25.0" layoutY="40.0" onAction="#tableA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
              
-                              <ListView fx:id="countryCheckBoxList" layoutX="25.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" />
-                              <Button fx:id="displaySelectedCountries" layoutX="25.0" layoutY="315.0" mnemonicParsing="false" onAction="#doDisplayCountries" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                              <ListView fx:id="tableA_countryCheckBoxList" layoutX="25.0" layoutY="99.0" prefHeight="200.0" prefWidth="200.0" />
+                              <Button fx:id="displayTableA" layoutX="25.0" layoutY="315.0" mnemonicParsing="false" onAction="#doDisplayTableA" prefHeight="42.0" prefWidth="200.0" text="Display" />
                               <Label layoutX="24.0" layoutY="85.0" text="Countries" />
                               <Label layoutX="24.0" layoutY="22.0" text="Date" />
-                              <TableView fx:id="TableA" layoutX="244.0" layoutY="39.0" prefHeight="317.0" prefWidth="436.0" stylesheets="@table.css">
+                              <TableView fx:id="TableA" layoutX="244.0" layoutY="39.0" prefHeight="333.0" prefWidth="736.0" stylesheets="@table.css">
                                  <columns>
-                                    <TableColumn fx:id="countryName" prefWidth="140.0" text="Country" />
-                                    <TableColumn fx:id="totalCases" prefWidth="138.0" text="Total Cases" />
-                                    <TableColumn fx:id="totalCasesPerM" prefWidth="156.0" text="Total Cases (Per 1M)" />
+                                    <TableColumn fx:id="countryName" prefWidth="184.0" text="Country" />
+                                    <TableColumn fx:id="totalCases" prefWidth="217.0" text="Total Cases" />
+                                    <TableColumn fx:id="totalCasesPerM" prefWidth="236.0" text="Total Cases (Per 1M)" />
                                  </columns></TableView>
                            </children>
                         </AnchorPane>
@@ -85,13 +88,34 @@
                     </content>
                   </Tab>
                   <Tab fx:id="tabApp1" text="Chart A">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="719.0">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="305.0" prefWidth="997.0">
                            <children>
-                              <TextArea layoutX="14.0" layoutY="14.0" prefHeight="294.0" prefWidth="694.0" text="Task A2: Generate data charts showing the cumulative confirmed COVID-19 cases (per 1M) by country&#10;&#10;Input&#10;•&#9;Specify the period of interest&#10;•&#9;Specify the countries of interest&#10;&#10;Output&#10;•&#9;Label the data chart with a proper title: &quot;Cumulative Confirmed COVID-19 Cases (per 1M)&quot;&#10;•&#9;Label the x-axis and y-axis with proper scales&#10;•&#9;Present data in coloured cumulative curves labelled with corresponding countries&#10;&#10;" wrapText="true" />
+                              <Label layoutX="79.0" layoutY="44.0" />
+                              <ListView fx:id="chartA_countryCheckBoxList" layoutX="25.0" layoutY="122.0" prefHeight="177.0" prefWidth="200.0" />
+                              <Button fx:id="displayChartA" layoutX="25.0" layoutY="315.0" mnemonicParsing="false" onAction="#doDisplayChartA" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                              <Label layoutX="24.0" layoutY="104.0" text="Countries" />
+                              <Label layoutX="24.0" layoutY="19.0" text="Date From" />
+                              <DatePicker fx:id="chartA_datePickerFrom" layoutX="25.0" layoutY="35.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                              <Label layoutX="25.0" layoutY="59.0" text="Date To" />
+                              <DatePicker fx:id="chartA_datePickerTo" layoutX="26.0" layoutY="75.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                              <LineChart fx:id="chartA_lineChart" layoutX="252.0" layoutY="19.0" prefHeight="462.0" prefWidth="736.0">
+                                <xAxis>
+                                  <CategoryAxis fx:id="chartA_xAxis" prefWidth="688.0" side="BOTTOM">
+                                       <tickLabelFont>
+                                          <Font size="10.0" />
+                                       </tickLabelFont></CategoryAxis>
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis fx:id="chartA_yAxis" autoRanging="false" minorTickLength="0.0" side="LEFT" tickUnit="1.0" upperBound="5.0">
+                                       <tickLabelFont>
+                                          <Font size="10.0" />
+                                       </tickLabelFont></NumberAxis>
+                                </yAxis>
+                              </LineChart>
                            </children>
                         </AnchorPane>
-                    </content>
+                     </content>
                   </Tab>
                   <Tab fx:id="tabApp2" text="Chart B">
                     <content>
@@ -116,9 +140,9 @@
       </children>
     </AnchorPane>
       <Label text="Console" />
-      <ScrollPane prefHeight="387.0" prefWidth="719.0">
+      <ScrollPane prefHeight="169.0" prefWidth="1008.0">
          <content>
-            <TextArea fx:id="textAreaConsole" prefHeight="300.0" prefWidth="718.0" />
+            <TextArea fx:id="textAreaConsole" prefHeight="205.0" prefWidth="995.0" />
          </content>
       </ScrollPane>
   </children>

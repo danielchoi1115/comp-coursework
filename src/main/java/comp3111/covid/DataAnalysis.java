@@ -1,7 +1,9 @@
 package comp3111.covid;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -148,11 +150,21 @@ public class DataAnalysis {
 		 return dates;
 	 }
 	 
+	 public static boolean isBetween(LocalDate date, LocalDate dateFrom, LocalDate dateTo) {
+		if ((date.isAfter(dateFrom) && date.isBefore(dateTo)) || date.isEqual(dateFrom) || date.isEqual(dateTo)) {
+ 			return true;
+ 		}
+ 		return false;
+	 }
+	 
 	 public static LocalDate stringToLocalDate(String dateString) {
 		 return LocalDate.parse(dateString, DateTimeFormatter.ofPattern("M/d/yyyy"));
 	 }
 	 
 	 public static String formatNumberWithComma(String numberString) {
+		 if (numberString.strip() == "") {
+			 return "N/A";
+		 }
 		 try {
 			 // Check if it is integer
 			 int num = Integer.parseInt(numberString);
@@ -185,4 +197,107 @@ public class DataAnalysis {
 		 }
 		 return confirmedCaseList;
 	 }
+	 
+//	 chart A
+	 public static LinkedHashMap<String, ArrayList<LocalDate>> getCountryDateMap() {
+		 LinkedHashMap<String, ArrayList<LocalDate>> countryDateMap = new LinkedHashMap<>();
+		 String dataset = "COVID_Dataset_v1.0.csv";
+		 
+		 ArrayList<LocalDate> dates = new ArrayList<>();
+		 LocalDate minDate_new = LocalDate.of(0000,01,01);
+		 LocalDate maxDate_new = LocalDate.of(0000,01,01);
+		 LocalDate minDate_total = LocalDate.of(0000,01,01);
+		 LocalDate maxDate_total = LocalDate.of(0000,01,01);
+		 
+		 String countryName = "";
+		 for (CSVRecord rec : getFileParser(dataset)) {
+			 if (countryName == "") {
+				 countryName = rec.get("location");
+			 }
+			 else if (!countryName.equals(rec.get("location"))) {
+				 dates.add(minDate_new);
+				 dates.add(maxDate_new);
+				 dates.add(minDate_total);
+				 dates.add(maxDate_total);
+				 countryDateMap.put(countryName, dates);
+				 
+				 countryName = rec.get("location");
+				 dates = new ArrayList<LocalDate>();
+				 minDate_new = LocalDate.of(0000,01,01);
+				 maxDate_new = LocalDate.of(0000,01,01);
+				 minDate_total = LocalDate.of(0000,01,01);
+				 maxDate_total = LocalDate.of(0000,01,01);
+			 }
+			 LocalDate date = stringToLocalDate(rec.get("date"));
+			 
+			 if (!rec.get("new_cases").equals("")) {
+				 if (minDate_new.equals(LocalDate.of(0000,01,01)) || minDate_new.isAfter(date)) {
+					 minDate_new = date;
+				 }
+				 if (maxDate_new.equals(LocalDate.of(0000,01,01)) || maxDate_new.isBefore(date)) {
+					 maxDate_new = date;
+				 }
+			 }
+			 if (!rec.get("total_cases_per_million").equals("")) {
+				 if (minDate_total.equals(LocalDate.of(0000,01,01)) || minDate_total.isAfter(date)) {
+					 minDate_total = date;
+				 }
+				 if (maxDate_total.equals(LocalDate.of(0000,01,01)) || maxDate_total.isBefore(date)) {
+					 maxDate_total = date;
+				 }
+			 }
+		 }
+		 dates.add(minDate_new);
+		 dates.add(maxDate_new);
+		 dates.add(minDate_total);
+		 dates.add(maxDate_total);
+		 countryDateMap.put(countryName, dates);
+		 
+		 return countryDateMap;
+	 }
+	 
+	 
+	 public static LinkedHashMap<String, ArrayList<LinkedHashMap<LocalDate, Double>>> getCumulativeMap(ArrayList<String> selectedCountries, LocalDate dateFrom, LocalDate dateTo) {
+		 LinkedHashMap<String, ArrayList<LinkedHashMap<LocalDate, Double>>> cumulativeMap = new LinkedHashMap<>();
+		 String dataset = "COVID_Dataset_v1.0.csv";
+		 
+		 ArrayList<LinkedHashMap<LocalDate, Double>> records = new ArrayList<>();
+		 
+		 String countryName = "";
+		 for (CSVRecord rec : getFileParser(dataset)) {
+			 if (countryName == "") {
+				 countryName = rec.get("location");
+			 }
+			 else if (!countryName.equals(rec.get("location"))) {
+				 if (records.size() > 0) {
+					 cumulativeMap.put(countryName, records);
+				 }
+				 countryName = rec.get("location");
+				 records = new ArrayList<LinkedHashMap<LocalDate, Double>>();
+			 }
+			 LocalDate date = stringToLocalDate(rec.get("date"));
+			 Double total_cases_per_million = stringToDouble(rec.get("total_cases_per_million"));
+			 
+			 if (selectedCountries.contains(countryName) && isBetween(date, dateFrom, dateTo) && total_cases_per_million > -1.0) {
+				 
+				 LinkedHashMap<LocalDate, Double> dateMap = new LinkedHashMap<>();
+				 dateMap.put(date, total_cases_per_million);
+				 records.add(dateMap);		
+			 }
+		 }
+		 if (records.size() > 0) {
+			 cumulativeMap.put(countryName, records);
+		 }
+		 return cumulativeMap;
+	 }
+	 public static Double stringToDouble(String numberString) {
+		 if (numberString == "") {
+			 return -1.0;
+		 }
+		 else {
+			 return Double.parseDouble(numberString);
+		 }
+	 }
+	 
+	 
 }
