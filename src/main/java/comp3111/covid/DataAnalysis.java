@@ -1,6 +1,7 @@
 package comp3111.covid;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -300,4 +301,28 @@ public class DataAnalysis {
 	 }
 	 
 	 
+//	 worldMap A
+	 public static LinkedHashMap<LocalDate, LinkedHashMap<String, Double>> getDateContinentMap() {
+		 LinkedHashMap<LocalDate, LinkedHashMap<String, Double>> dateContinentMap = new LinkedHashMap<>();
+		 String dataset = "COVID_Dataset_v1.0.csv";
+		 ArrayList<String> continents = new ArrayList<>();
+	     Collections.addAll(continents, "Asia", "Africa", "Europe", "Oceania", "North America", "South America");
+
+		 for (CSVRecord rec : getFileParser(dataset)) {
+			 String location = rec.get("location");
+			 LocalDate date = stringToLocalDate(rec.get("date"));
+			 if (isBetween(date, LocalDate.of(2020, 3, 1), LocalDate.of(2021, 7, 20)) && !dateContinentMap.containsKey(date)) {
+				 dateContinentMap.put(date, new LinkedHashMap<String, Double>());
+			 }
+			 
+			 if (dateContinentMap.containsKey(date) && continents.contains(location)) {
+				 dateContinentMap.get(date).put(location, stringToDouble(rec.get("total_cases_per_million")));
+			 }
+
+		 }
+		 
+		 
+		 return dateContinentMap;
+	 }
+ 
 }
