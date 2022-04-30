@@ -9,13 +9,12 @@ import java.util.LinkedHashMap;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DateCell;
@@ -28,7 +27,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
@@ -78,23 +76,20 @@ public class Controller {
 
 //    Table A
     private LinkedHashMap<String, ArrayList<LocalDate>> countryDateMap;
-    
     private ObservableList<CheckBox> tableA_countryCheckbox = FXCollections.observableArrayList();
-    
     private ArrayList<LocalDate> dateLists;
-    
     @FXML 
     private ListView<CheckBox> tableA_countryCheckBoxList;
-    
+    @FXML
+    private CheckBox tableA_selectAllCheckBox;
     @FXML
     private Button displayTableA;
-    
+    @FXML
+    private Button clearTableA;
     @FXML
     private DatePicker tableA_datePicker;
-    
     @FXML
     private TableView<ConfirmedCase>  TableA;
-    
     @FXML
     private TableColumn<ConfirmedCase, String> countryName;
     @FXML
@@ -105,31 +100,27 @@ public class Controller {
 //    Chart A
     @FXML
     private LineChart<String, Number> chartA_lineChart; 
- 
     private ObservableList<CheckBox> chartA_countryCheckbox = FXCollections.observableArrayList();
-    
     @FXML
     private DatePicker chartA_datePickerFrom;
-    
     @FXML
     private DatePicker chartA_datePickerTo;
-    
     @FXML 
     private ListView<CheckBox> chartA_countryCheckBoxList;
-    
+    @FXML
+    private CheckBox chartA_selectAllCheckBox;
     @FXML
     private Button displayChartA;
-    
+    @FXML
+    private Button clearChartA;
     @FXML
     private CategoryAxis chartA_xAxis ;
-
     @FXML
     private NumberAxis chartA_yAxis ;
-    
+
+//  WOW Factor world map
     @FXML 
     private Slider worldmapA_dateSlider;
-//  WOW Factor world map images
-    
     @FXML
     private Polygon worldmap_north_america = new Polygon();
     @FXML
@@ -142,9 +133,7 @@ public class Controller {
     private Polygon worldmap_asia = new Polygon();
     @FXML
     private Polygon worldmap_oceania = new Polygon();
-    
     private LinkedHashMap<LocalDate, LinkedHashMap<String, Double>> worldmapA_dateContinentMap;
-    
     private LinkedHashMap<String, Polygon> worldmapA_polygonMap;
     
     @FXML
@@ -210,56 +199,51 @@ public class Controller {
     
 	@FXML 
     void doDisplayTableA(ActionEvent event) {
+		TableA.setItems(null);
     	ArrayList<String> selectedCountries = new ArrayList<>();
-    	for (CheckBox country: tableA_countryCheckBoxList.getItems()) {
-    		if (country.isSelected()) {
-    			selectedCountries.add(country.getText());
+    	for (CheckBox checkbox: tableA_countryCheckBoxList.getItems()) {
+    		if (checkbox.isSelected()) {
+    			selectedCountries.add(checkbox.getText());
     		}
     	}
-    	
-    	if (selectedCountries.size() == 0) {
-    		noCountrySelectedAlert();
-    		return;
-    	}
-    	
     	LocalDate dateSelected = tableA_datePicker.getValue();
     	
-    	if (!validateDate(dateSelected)) {
-    		notValidDateAlert();
+    	if (selectedCountries.size() == 0) {
+    		Alerter.noCountrySelectedAlert();
     		return;
     	}
-    	
-    	textAreaConsole.setText(dateSelected.toString());
+    	else if (!validateDate(dateSelected)) {
+    		Alerter.notValidDateAlert();
+    		return;
+    	}
 
     	ObservableList<ConfirmedCase> confirmedCaseList = DataAnalysis.getConfirmedCases(selectedCountries, dateSelected);
 
     	if (confirmedCaseList.size() == 0) {
-    		noDataAlert();
+    		Alerter.noDataAlert();
     		return;
     	}
     	
     	countryName.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("countryName"));
     	totalCases.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("totalCases"));
     	totalCasesPerM.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("totalCasesPerM"));
-    	
     	TableA.setItems(confirmedCaseList);
-    	
-    	
     }
     
 	@FXML 
     void doDisplayChartA(ActionEvent event) {
+		
 		chartA_lineChart.getData().clear();
 		
 		ArrayList<String> selectedCountries = new ArrayList<>();
-    	for (CheckBox country: chartA_countryCheckBoxList.getItems()) {
-    		if (country.isSelected()) {
-    			selectedCountries.add(country.getText());
+    	for (CheckBox checkbox: chartA_countryCheckBoxList.getItems()) {
+    		if (checkbox.isSelected()) {
+    			selectedCountries.add(checkbox.getText());
     		}
     	}
     	
     	if (selectedCountries.size() == 0) {
-    		noCountrySelectedAlert();
+    		Alerter.noCountrySelectedAlert();
     		return;
     	}
     	
@@ -273,7 +257,7 @@ public class Controller {
 		LinkedHashMap<String, ArrayList<LinkedHashMap<LocalDate, Double>>> cumulativeMap = DataAnalysis.getCumulativeMap(selectedCountries, dateFrom, dateTo);
 		
 		if (cumulativeMap.size() == 0) {
-			noDataAlert();
+			Alerter.noDataAlert();
 		}
 		
         chartA_lineChart.setTitle("Cumulative Confirmed COVID-19 Cases (per 1M)");
@@ -294,65 +278,113 @@ public class Controller {
 		
 	}
 	
-	void noCountrySelectedAlert() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Warning Dialog");
-		alert.setHeaderText("No Country selected!");
-		alert.setContentText("Please select at least one country!");
-		alert.showAndWait();
+	@FXML
+	void clearTableA() {
+		TableA.setItems(null);
+		for (CheckBox checkbox: tableA_countryCheckBoxList.getItems()) {
+			checkbox.setSelected(false);
+    	}
+		LocalDate maxDate = Collections.max(dateLists);
+		tableA_datePicker.setValue(maxDate);
+		tableA_selectAllCheckBox.setSelected(false);
 	}
-	void noDataAlert() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Warning Dialog");
-		alert.setHeaderText("Data is not Found!");
-		alert.setContentText("Please select different date or country!");
-		alert.showAndWait();
-	}
-	void notValidDateAlert() {
-		Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("Warning Dialog");
-		alert.setHeaderText("Date is invalid!");
-		alert.setContentText("Please provide valid date!");
-		alert.showAndWait();
+	@FXML
+	void clearChartA() {
+		chartA_lineChart.getData().clear();
+		for (CheckBox checkbox: chartA_countryCheckBoxList.getItems()) {
+			checkbox.setSelected(false);
+    	}
+		LocalDate maxDate = Collections.max(dateLists);
+		chartA_datePickerFrom.setValue(maxDate);
+		chartA_datePickerFrom.setValue(maxDate);
+		chartA_selectAllCheckBox.setSelected(false);
 	}
 	
-	boolean validateDate(LocalDate dateSelected) {
-		
-		LocalDate minDate = Collections.min(dateLists);
-    	LocalDate maxDate = Collections.max(dateLists);
-    	
-    	try {
-    		if (DataAnalysis.isBetween(dateSelected, minDate, maxDate)) {
-    			return true;
-    		}
-    		return false;
-    	} catch(Exception e) {
-    		textAreaConsole.setText(e.toString());
-    		return false;
+	
+	@FXML
+	void tableA_selectAll(){
+		boolean selected = false;
+		if (tableA_selectAllCheckBox.isSelected()){
+			selected = true;
+		}
+		for (CheckBox checkbox: tableA_countryCheckBoxList.getItems()) {
+			if (!checkbox.isDisabled()) {
+				checkbox.setSelected(selected);
+			}
     	}
 	}
+	@FXML
+	void chartA_selectAll(){
+		boolean selected = false;
+		if (chartA_selectAllCheckBox.isSelected()){
+			selected = true;
+		}
+		for (CheckBox checkbox: chartA_countryCheckBoxList.getItems()) {
+			if (!checkbox.isDisabled()) {
+				checkbox.setSelected(selected);
+			}
+    	}
+	}
+	boolean validateDate(LocalDate dateSelected) {
+			
+			LocalDate minDate = Collections.min(dateLists);
+	    	LocalDate maxDate = Collections.max(dateLists);
+	    	
+	    	try {
+	    		if (DataAnalysis.isBetween(dateSelected, minDate, maxDate)) {
+	    			return true;
+	    		}
+	    		return false;
+	    	} catch(Exception e) {
+	    		textAreaConsole.setText(e.toString());
+	    		return false;
+	    	}
+		}
 	
 	boolean validateDate(LocalDate dateFrom, LocalDate dateTo) {
     	if (validateDate(dateFrom) && validateDate(dateTo) && (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo))) {
     		return true;
     	}	
-    	notValidDateAlert();
+    	Alerter.notValidDateAlert();
     	return false;
 	}
 	
+	
 	// Add countries that can be checked for user input
+	@FXML
     void addCountryCheckbox() {
     	ArrayList<String> countries = DataAnalysis.getCountries();
     	for (String country: countries) {
     		CheckBox checkbox = new CheckBox(country);
+    		checkbox.setOnAction(new EventHandler<ActionEvent>() {
+    		    public void handle(ActionEvent e) {
+    		    	for (CheckBox checkbox: tableA_countryCheckBoxList.getItems()) {
+    					if(!checkbox.isSelected() && !checkbox.isDisabled()) {
+    						tableA_selectAllCheckBox.setSelected(false);
+    						return;
+    					}
+    		    	}
+    				tableA_selectAllCheckBox.setSelected(true);
+    		    }
+    		});
     		tableA_countryCheckbox.add(checkbox);
     		
     		CheckBox checkbox2 = new CheckBox(country);
+    		checkbox2.setOnAction(new EventHandler<ActionEvent>() {
+    		    public void handle(ActionEvent e) {
+    		    	for (CheckBox checkbox: chartA_countryCheckBoxList.getItems()) {
+    					if(!checkbox.isSelected() && !checkbox.isDisabled()) {
+    						chartA_selectAllCheckBox.setSelected(false);
+    						return;
+    					}
+    		    	}
+    				chartA_selectAllCheckBox.setSelected(true);
+    		    }
+    		});
     		chartA_countryCheckbox.add(checkbox2);
     	}
     	
     }
- 
     
     // Disable Dates that are out of range
     void setMinMaxOfDatePicker(){

@@ -4,6 +4,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -49,15 +50,21 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="719.0">
                            <children>
-                              <Pane layoutX="21.0" layoutY="26.0" prefHeight="412.0" prefWidth="956.0">
+                              <Pane layoutX="14.0" layoutY="25.0" prefHeight="443.0" prefWidth="956.0">
                                  <children>
-                                    <DatePicker fx:id="tableA_datePicker" layoutX="8.0" layoutY="61.0" onAction="#tableA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                                    <DatePicker fx:id="tableA_datePicker" layoutX="1.0" layoutY="47.0" onAction="#tableA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
                    
-                                    <ListView fx:id="tableA_countryCheckBoxList" layoutX="8.0" layoutY="120.0" prefHeight="200.0" prefWidth="200.0" />
-                                    <Button fx:id="displayTableA" layoutX="8.0" layoutY="336.0" mnemonicParsing="false" onAction="#doDisplayTableA" prefHeight="42.0" prefWidth="200.0" text="Display" />
-                                    <Label layoutX="6.0" layoutY="106.0" text="Countries" />
-                                    <Label layoutX="7.0" layoutY="43.0" text="Date" />
-                                    <TableView fx:id="TableA" layoutX="227.0" layoutY="60.0" prefHeight="333.0" prefWidth="736.0" stylesheets="@table.css">
+                                    <ListView fx:id="tableA_countryCheckBoxList" layoutX="2.0" layoutY="120.0" prefHeight="200.0" prefWidth="200.0" />
+                                    <Button fx:id="displayTableA" layoutX="2.0" layoutY="335.0" mnemonicParsing="false" onAction="#doDisplayTableA" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                                    <Label layoutY="77.0" text="Countries">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <Label layoutY="29.0" text="Date">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <TableView fx:id="TableA" layoutX="227.0" layoutY="60.0" prefHeight="367.0" prefWidth="736.0" stylesheets="@table.css">
                                        <columns>
                                           <TableColumn fx:id="countryName" prefWidth="184.0" text="Country" />
                                           <TableColumn fx:id="totalCases" prefWidth="217.0" text="Total Cases" />
@@ -69,6 +76,8 @@
                                           <Font name="Times New Roman" size="18.0" />
                                        </font>
                                     </Label>
+                                    <Button fx:id="clearTableA" layoutX="2.0" layoutY="384.0" mnemonicParsing="false" onAction="#clearTableA" prefHeight="42.0" prefWidth="200.0" text="Reset" />
+                                    <CheckBox fx:id="tableA_selectAllCheckBox" layoutX="2.0" layoutY="102.0" mnemonicParsing="false" onAction="#tableA_selectAll" text="Select All" />
                                  </children>
                               </Pane>
                            </children>
@@ -105,16 +114,25 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="305.0" prefWidth="997.0">
                            <children>
-                              <Pane layoutX="17.0" layoutY="51.0">
+                              <Pane layoutX="17.0" layoutY="12.0" prefHeight="476.0" prefWidth="964.0">
                                  <children>
-                                    <ListView fx:id="chartA_countryCheckBoxList" layoutX="1.0" layoutY="103.0" prefHeight="177.0" prefWidth="200.0" />
-                                    <Button fx:id="displayChartA" layoutX="1.0" layoutY="296.0" mnemonicParsing="false" onAction="#doDisplayChartA" prefHeight="42.0" prefWidth="200.0" text="Display" />
-                                    <Label layoutY="85.0" text="Countries" />
-                                    <Label text="Date From" />
-                                    <DatePicker fx:id="chartA_datePickerFrom" layoutX="1.0" layoutY="16.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
-                                    <Label layoutX="1.0" layoutY="40.0" text="Date To" />
-                                    <DatePicker fx:id="chartA_datePickerTo" layoutX="2.0" layoutY="56.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
-                                    <LineChart fx:id="chartA_lineChart" layoutX="228.0" prefHeight="437.0" prefWidth="736.0">
+                                    <ListView fx:id="chartA_countryCheckBoxList" layoutX="1.0" layoutY="128.0" prefHeight="177.0" prefWidth="200.0" />
+                                    <Button fx:id="displayChartA" layoutX="2.0" layoutY="325.0" mnemonicParsing="false" onAction="#doDisplayChartA" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                                    <Label layoutY="87.0" text="Countries">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <Label text="Date From">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <DatePicker fx:id="chartA_datePickerFrom" layoutX="1.0" layoutY="18.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                                    <Label layoutX="1.0" layoutY="42.0" text="Date To">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <DatePicker fx:id="chartA_datePickerTo" layoutX="2.0" layoutY="60.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                                    <LineChart fx:id="chartA_lineChart" layoutX="228.0" layoutY="6.0" prefHeight="468.0" prefWidth="736.0">
                                       <xAxis>
                                         <CategoryAxis fx:id="chartA_xAxis" prefWidth="688.0" side="BOTTOM">
                                              <tickLabelFont>
@@ -130,13 +148,10 @@
                                           </NumberAxis>
                                       </yAxis>
                                     </LineChart>
+                                    <Button fx:id="clearChartA" layoutX="1.0" layoutY="371.0" mnemonicParsing="false" onAction="#clearChartA" prefHeight="42.0" prefWidth="200.0" text="Reset" />
+                                    <CheckBox fx:id="chartA_selectAllCheckBox" layoutX="1.0" layoutY="110.0" mnemonicParsing="false" onAction="#chartA_selectAll" text="Select All" />
                                  </children>
                               </Pane>
-                              <Label layoutX="255.0" layoutY="14.0" prefHeight="29.0" prefWidth="532.0" text="Cumulative Confirmed COVID-19 Cases (per 1M)" textAlignment="CENTER">
-                                 <font>
-                                    <Font name="Times New Roman" size="18.0" />
-                                 </font>
-                              </Label>
                            </children>
                         </AnchorPane>
                      </content>
