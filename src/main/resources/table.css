@@ -1,0 +1,15 @@
+.table-view .column-header{
+    -fx-font-size:15px;
+    -fx-pref-height: 25px;
+  }
+
+.table-view .table-column{
+    -fx-alignment:center;
+}
+
+.table-view .table-cell{
+    -fx-font-weight:bold;
+    -fx-font-size:13px;
+    /* -fx-text-fill:orange; */
+
+}

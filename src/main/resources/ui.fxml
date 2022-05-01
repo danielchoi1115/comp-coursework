@@ -1,20 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.text.Font?>
 
-<VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
+<VBox prefHeight="679.0" prefWidth="1008.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
   <children>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="437.0" prefWidth="719.0">
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="536.0" prefWidth="1008.0">
       <children>
-            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="350.0" prefWidth="719.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="535.0" prefWidth="997.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab fx:id="tabTaskZero" text="Task Zero">
                   <content>
@@ -36,8 +50,36 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="719.0">
                            <children>
-                              <Label layoutX="79.0" layoutY="44.0" />
-                              <TextArea layoutX="14.0" layoutY="12.0" prefHeight="296.0" prefWidth="698.0" text="Task A1: Generate data tables showing the number of confirmed COVID-19 cases by country&#10;&#10;Input&#10;•&#9;Specify the date of interest&#10;•&#9;Specify the countries of interest&#10;&#10;Output&#10;•&#9;Label the data table with a proper title: &quot;Number of Confirmed COVID-19 Cases as of [Date of Interest]&quot;&#10;•&#9;Present data in 3 columns with proper headings of &quot;Country&quot;, &quot;Total Cases&quot;, and &quot;Total Cases (per 1M)&quot;&#10;•&#9;Present data for the countries of interest in rows&#10;&#10;" wrapText="true" />
+                              <Pane layoutX="14.0" layoutY="25.0" prefHeight="443.0" prefWidth="956.0">
+                                 <children>
+                                    <DatePicker fx:id="tableA_datePicker" layoutX="1.0" layoutY="47.0" onAction="#tableA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                   
+                                    <ListView fx:id="tableA_countryCheckBoxList" layoutX="2.0" layoutY="120.0" prefHeight="200.0" prefWidth="200.0" />
+                                    <Button fx:id="displayTableA" layoutX="2.0" layoutY="335.0" mnemonicParsing="false" onAction="#doDisplayTableA" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                                    <Label layoutY="77.0" text="Countries">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <Label layoutY="29.0" text="Date">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <TableView fx:id="TableA" layoutX="227.0" layoutY="60.0" prefHeight="367.0" prefWidth="736.0" stylesheets="@table.css">
+                                       <columns>
+                                          <TableColumn fx:id="countryName" prefWidth="184.0" text="Country" />
+                                          <TableColumn fx:id="totalCases" prefWidth="217.0" text="Total Cases" />
+                                          <TableColumn fx:id="totalCasesPerM" prefWidth="236.0" text="Total Cases (Per 1M)" />
+                                       </columns>
+                                    </TableView>
+                                    <Label layoutX="227.0" layoutY="14.0" prefHeight="29.0" prefWidth="532.0" text="Number of Confirmed COVID-19 cases" textAlignment="CENTER">
+                                       <font>
+                                          <Font name="Times New Roman" size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Button fx:id="clearTableA" layoutX="2.0" layoutY="384.0" mnemonicParsing="false" onAction="#clearTableA" prefHeight="42.0" prefWidth="200.0" text="Reset" />
+                                    <CheckBox fx:id="tableA_selectAllCheckBox" layoutX="2.0" layoutY="102.0" mnemonicParsing="false" onAction="#tableA_selectAll" text="Select All" />
+                                 </children>
+                              </Pane>
                            </children>
                         </AnchorPane>
                     </content>
@@ -69,13 +111,50 @@
                     </content>
                   </Tab>
                   <Tab fx:id="tabApp1" text="Chart A">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="719.0">
+                     <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="305.0" prefWidth="997.0">
                            <children>
-                              <TextArea layoutX="14.0" layoutY="14.0" prefHeight="294.0" prefWidth="694.0" text="Task A2: Generate data charts showing the cumulative confirmed COVID-19 cases (per 1M) by country&#10;&#10;Input&#10;•&#9;Specify the period of interest&#10;•&#9;Specify the countries of interest&#10;&#10;Output&#10;•&#9;Label the data chart with a proper title: &quot;Cumulative Confirmed COVID-19 Cases (per 1M)&quot;&#10;•&#9;Label the x-axis and y-axis with proper scales&#10;•&#9;Present data in coloured cumulative curves labelled with corresponding countries&#10;&#10;" wrapText="true" />
+                              <Pane layoutX="17.0" layoutY="12.0" prefHeight="476.0" prefWidth="964.0">
+                                 <children>
+                                    <ListView fx:id="chartA_countryCheckBoxList" layoutX="1.0" layoutY="128.0" prefHeight="177.0" prefWidth="200.0" />
+                                    <Button fx:id="displayChartA" layoutX="2.0" layoutY="325.0" mnemonicParsing="false" onAction="#doDisplayChartA" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                                    <Label layoutY="87.0" text="Countries">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <Label text="Date From">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <DatePicker fx:id="chartA_datePickerFrom" layoutX="1.0" layoutY="18.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                                    <Label layoutX="1.0" layoutY="42.0" text="Date To">
+                                       <font>
+                                          <Font size="16.0" />
+                                       </font></Label>
+                                    <DatePicker fx:id="chartA_datePickerTo" layoutX="2.0" layoutY="60.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                                    <LineChart fx:id="chartA_lineChart" layoutX="228.0" layoutY="6.0" prefHeight="468.0" prefWidth="736.0">
+                                      <xAxis>
+                                        <CategoryAxis fx:id="chartA_xAxis" prefWidth="688.0" side="BOTTOM">
+                                             <tickLabelFont>
+                                                <Font size="10.0" />
+                                             </tickLabelFont>
+                                          </CategoryAxis>
+                                      </xAxis>
+                                      <yAxis>
+                                        <NumberAxis fx:id="chartA_yAxis" minorTickLength="0.0" side="LEFT" tickUnit="1.0" upperBound="5.0">
+                                             <tickLabelFont>
+                                                <Font size="10.0" />
+                                             </tickLabelFont>
+                                          </NumberAxis>
+                                      </yAxis>
+                                    </LineChart>
+                                    <Button fx:id="clearChartA" layoutX="1.0" layoutY="371.0" mnemonicParsing="false" onAction="#clearChartA" prefHeight="42.0" prefWidth="200.0" text="Reset" />
+                                    <CheckBox fx:id="chartA_selectAllCheckBox" layoutX="1.0" layoutY="110.0" mnemonicParsing="false" onAction="#chartA_selectAll" text="Select All" />
+                                 </children>
+                              </Pane>
                            </children>
                         </AnchorPane>
-                    </content>
+                     </content>
                   </Tab>
                   <Tab fx:id="tabApp2" text="Chart B">
                     <content>
@@ -95,14 +174,53 @@
                         </AnchorPane>
                     </content>
                   </Tab>
+                  <Tab text="Worldmap A">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Slider fx:id="worldmapA_dateSlider" layoutX="223.0" layoutY="489.0" onValueChange="#worldMapA_setColor" prefHeight="14.0" prefWidth="591.0" />
+                              <Label layoutX="206.0" layoutY="6.0" prefHeight="29.0" prefWidth="679.0" text="WorldWide Cumulative Confirmed COVID-19 cases per million people, Jul 20, 2021" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Times New Roman" size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="150.0" layoutY="489.0" text="Mar 01. 2020">
+                                 <font>
+                                    <Font name="Times New Roman" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="817.0" layoutY="489.0" text="Jan 22, 2021">
+                                 <font>
+                                    <Font name="Times New Roman" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Pane layoutX="34.0" layoutY="43.0" prefHeight="432.0" prefWidth="947.0">
+                                 <children>
+                                    <Polygon fx:id="worldmap_north_america" fill="#2197ff" layoutX="200.0" layoutY="176.0" points="73.0, 105.0, 245.0, -93.0, 187.0, -173.0, 47.0, -143.0, -85.0, -81.0, -58.0, 10.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                                    <Polygon fx:id="worldmap_south_america" fill="#2197ff" layoutX="412.0" layoutY="323.0" points="-95.0, 106.0, -63.666656494140625, 69.33334350585938, -19.666656494140625, -30.0, -63.666656494140625, -67.33334350585938, -129.0, -55.333343505859375, -117.66665649414062, 95.33334350585938" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                                    <Polygon fx:id="worldmap_africa" fill="#2197ff" layoutX="471.0" layoutY="469.0" points="60.0, -96.0, 69.33331298828125, -198.0, 16.66668701171875, -256.6666564941406, -64.0, -256.6666564941406, -64.0, -180.0, -29.333343505859375, -172.0, 1.333343505859375, -87.33334350585938" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                                    <Polygon fx:id="worldmap_oceania" fill="#2197ff" layoutX="619.0" layoutY="363.0" points="112.0, 36.666656494140625, 176.66668701171875, 31.333343505859375, 198.0, -31.333343505859375, 120.0, -112.66665649414062, 40.66668701171875, -70.0, 47.0, 2.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                                    <Polygon fx:id="worldmap_europe" fill="#2197ff" layoutX="570.0" layoutY="169.0" points="-23.0, 34.666656494140625, 5.66668701171875, -0.6666717529296875, 5.66668701171875, -98.66667175292969, -135.66665649414062, -121.33333587646484, -192.33334350585938, 34.666656494140625, -91.66668701171875, 40.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                                    <Polygon fx:id="worldmap_asia" fill="#2197ff" layoutX="704.0" layoutY="223.0" points="-183.66668701171875, 26.666656494140625, -79.66668701171875, 93.33334350585938, 79.66668701171875, -1.333343505859375, 105.0, -182.66665649414062, -128.33331298828125, -191.33334350585938, -128.33331298828125, -60.66667175292969, -155.0, -19.333343505859375, -219.0, -14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" />
+                                    <ImageView fitHeight="426.0" fitWidth="785.0" layoutX="115.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@worldmap/worldmap_background.png" />
+                                       </image>
+                                    </ImageView>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
               </tabs>
             </TabPane>
       </children>
     </AnchorPane>
       <Label text="Console" />
-      <ScrollPane prefHeight="387.0" prefWidth="719.0">
+      <ScrollPane prefHeight="169.0" prefWidth="1008.0">
          <content>
-            <TextArea fx:id="textAreaConsole" prefHeight="300.0" prefWidth="718.0" />
+            <TextArea fx:id="textAreaConsole" prefHeight="114.0" prefWidth="995.0" />
          </content>
       </ScrollPane>
   </children>
