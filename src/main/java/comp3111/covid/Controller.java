@@ -72,12 +72,17 @@ public class Controller {
     private Tab tabApp3;
 
     @FXML
+    private Tab worldMapA;
+    
+    @FXML
     private TextArea textAreaConsole;
 
-//    Table A
+//  Table A
     private LinkedHashMap<String, ArrayList<LocalDate>> countryDateMap;
     private ObservableList<CheckBox> tableA_countryCheckbox = FXCollections.observableArrayList();
     private ArrayList<LocalDate> dateLists;
+    LocalDate minDate;
+	LocalDate maxDate;
     @FXML 
     private ListView<CheckBox> tableA_countryCheckBoxList;
     @FXML
@@ -133,12 +138,15 @@ public class Controller {
     private Polygon worldmap_asia = new Polygon();
     @FXML
     private Polygon worldmap_oceania = new Polygon();
+    @FXML
     private LinkedHashMap<LocalDate, LinkedHashMap<String, Double>> worldmapA_dateContinentMap;
     private LinkedHashMap<String, Polygon> worldmapA_polygonMap;
     
     @FXML
     protected void initialize() {	
     	dateLists = DataAnalysis.getDates();
+        minDate = Collections.min(dateLists);
+    	maxDate = Collections.max(dateLists);
     	countryDateMap = DataAnalysis.getCountryDateMap();
     	addCountryCheckbox();
     	setMinMaxOfDatePicker();
@@ -163,10 +171,10 @@ public class Controller {
      */
     @FXML
     void doConfirmedCases(ActionEvent event) {
-    	String iDataset = textfieldDataset.getText();
-    	String iISO = textfieldISO.getText();
-    	String oReport = DataAnalysis.getConfirmedCases(iDataset, iISO);
-    	textAreaConsole.setText(oReport);
+//    	String iDataset = textfieldDataset.getText();
+//    	String iISO = textfieldISO.getText();
+//    	String oReport = DataAnalysis.getConfirmedCases(iDataset, iISO);
+//    	textAreaConsole.setText(oReport);
     }
 
     
@@ -177,10 +185,10 @@ public class Controller {
      */
     @FXML
     void doConfirmedDeaths(ActionEvent event) {
-    	String iDataset = textfieldDataset.getText();
-    	String iISO = textfieldISO.getText();
-    	String oReport = DataAnalysis.getConfirmedDeaths(iDataset, iISO);
-    	textAreaConsole.setText(oReport);
+//    	String iDataset = textfieldDataset.getText();
+//    	String iISO = textfieldISO.getText();
+//    	String oReport = DataAnalysis.getConfirmedDeaths(iDataset, iISO);
+//    	textAreaConsole.setText(oReport);
     }
 
   
@@ -191,91 +199,85 @@ public class Controller {
      */
     @FXML
     void doRateOfVaccination(ActionEvent event) {
-    	String iDataset = textfieldDataset.getText();
-    	String iISO = textfieldISO.getText();
-    	String oReport = DataAnalysis.getRateOfVaccination(iDataset, iISO);
-    	textAreaConsole.setText(oReport);
+//    	String iDataset = textfieldDataset.getText();
+//    	String iISO = textfieldISO.getText();
+//    	String oReport = DataAnalysis.getRateOfVaccination(iDataset, iISO);
+//    	textAreaConsole.setText(oReport);
     }  
     
 	@FXML 
-    void doDisplayTableA(ActionEvent event) {
+    void doDisplayTableA() {
 		TableA.setItems(null);
-    	ArrayList<String> selectedCountries = new ArrayList<>();
-    	for (CheckBox checkbox: tableA_countryCheckBoxList.getItems()) {
+		
+    	ArrayList<String> selectedCountries = getSelectedCountries_tableA();
+    	LocalDate dateSelected = getDateSelected_tableA();
+    	
+    	ObservableList<ConfirmedCase> confirmedCaseList = DataAnalysis.getConfirmedCases(selectedCountries, dateSelected);
+    	if (validateListSize(selectedCountries.size(), confirmedCaseList.size()) && validateDate(dateSelected, dateSelected, minDate, maxDate)) {
+			countryName.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("countryName"));
+			totalCases.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("totalCases"));
+			totalCasesPerM.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("totalCasesPerM"));
+			TableA.setItems(confirmedCaseList);
+    	}
+    }
+    
+	public ArrayList<String> getSelectedCountries_tableA(){
+		ArrayList<String> selectedCountries = new ArrayList<>();
+		for (CheckBox checkbox: tableA_countryCheckBoxList.getItems()) {
     		if (checkbox.isSelected()) {
     			selectedCountries.add(checkbox.getText());
     		}
     	}
-    	LocalDate dateSelected = tableA_datePicker.getValue();
-    	
-    	if (selectedCountries.size() == 0) {
-    		Alerter.noCountrySelectedAlert();
-    		return;
-    	}
-    	else if (!validateDate(dateSelected)) {
-    		Alerter.notValidDateAlert();
-    		return;
-    	}
-
-    	ObservableList<ConfirmedCase> confirmedCaseList = DataAnalysis.getConfirmedCases(selectedCountries, dateSelected);
-
-    	if (confirmedCaseList.size() == 0) {
-    		Alerter.noDataAlert();
-    		return;
-    	}
-    	
-    	countryName.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("countryName"));
-    	totalCases.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("totalCases"));
-    	totalCasesPerM.setCellValueFactory(new PropertyValueFactory<ConfirmedCase, String>("totalCasesPerM"));
-    	TableA.setItems(confirmedCaseList);
-    }
-    
+		return selectedCountries;
+	}
+	
+	public LocalDate getDateSelected_tableA() {
+		return tableA_datePicker.getValue();
+	}
+	
 	@FXML 
-    void doDisplayChartA(ActionEvent event) {
+    void doDisplayChartA() {
 		
 		chartA_lineChart.getData().clear();
 		
+		ArrayList<String> selectedCountries = getSelectedCountries_chartA();
+    	LocalDate dateFrom = getDateFrom_chartA();
+    	LocalDate dateTo = getDateTo_chartA();
+
+		LinkedHashMap<String, LinkedHashMap<LocalDate, Double>> cumulativeMap = DataAnalysis.getCumulativeMap(selectedCountries, dateFrom, dateTo);
+
+		if (validateListSize(selectedCountries.size(), cumulativeMap.size()) && validateDate(dateFrom, dateTo, minDate, maxDate)) {
+		    chartA_lineChart.setTitle("Cumulative Confirmed COVID-19 Cases (per 1M)");
+			ObservableList<XYChart.Series<String, Number>> seriesList = FXCollections.observableArrayList();
+			
+			cumulativeMap.forEach((countryName, dateMapList) -> {
+				XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+				series.setName(countryName);
+				dateMapList.forEach((date, totalConfirmedCase) -> {
+					Number record = (Number) totalConfirmedCase;
+					series.getData().add(new XYChart.Data<String, Number>(date.toString(), record)) ;
+				});
+				seriesList.add(series);
+			});
+			chartA_lineChart.setData(seriesList);
+		}
+	}
+	
+	public ArrayList<String> getSelectedCountries_chartA(){
 		ArrayList<String> selectedCountries = new ArrayList<>();
     	for (CheckBox checkbox: chartA_countryCheckBoxList.getItems()) {
     		if (checkbox.isSelected()) {
     			selectedCountries.add(checkbox.getText());
     		}
     	}
-    	
-    	if (selectedCountries.size() == 0) {
-    		Alerter.noCountrySelectedAlert();
-    		return;
-    	}
-    	
-    	LocalDate dateFrom = chartA_datePickerFrom.getValue();
-    	LocalDate dateTo = chartA_datePickerTo.getValue();
-    	
-    	if (!validateDate(dateFrom, dateTo)) {
-    		return;
-    	}
-    	
-		LinkedHashMap<String, ArrayList<LinkedHashMap<LocalDate, Double>>> cumulativeMap = DataAnalysis.getCumulativeMap(selectedCountries, dateFrom, dateTo);
-		
-		if (cumulativeMap.size() == 0) {
-			Alerter.noDataAlert();
-		}
-		
-        chartA_lineChart.setTitle("Cumulative Confirmed COVID-19 Cases (per 1M)");
-		ObservableList<XYChart.Series<String, Number>> seriesList = FXCollections.observableArrayList();
-		
-		cumulativeMap.forEach((countryName, dateMapList) -> {
-			XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
-			series.setName(countryName);
-			dateMapList.forEach(dateMap -> {
-				String date = dateMap.keySet().toArray()[0].toString();
-				Number record = (Number) dateMap.values().toArray()[0];
-				series.getData().add(new XYChart.Data<String, Number>(date, record)) ;
-			});
-			seriesList.add(series);
-		});
+		return selectedCountries;
+	}
 	
-		chartA_lineChart.setData(seriesList);
-		
+	public LocalDate getDateFrom_chartA() {
+		return chartA_datePickerFrom.getValue();
+	}
+	public LocalDate getDateTo_chartA() {
+		return chartA_datePickerTo.getValue();
 	}
 	
 	@FXML
@@ -325,29 +327,7 @@ public class Controller {
 			}
     	}
 	}
-	boolean validateDate(LocalDate dateSelected) {
-			
-			LocalDate minDate = Collections.min(dateLists);
-	    	LocalDate maxDate = Collections.max(dateLists);
-	    	
-	    	try {
-	    		if (DataAnalysis.isBetween(dateSelected, minDate, maxDate)) {
-	    			return true;
-	    		}
-	    		return false;
-	    	} catch(Exception e) {
-	    		textAreaConsole.setText(e.toString());
-	    		return false;
-	    	}
-		}
-	
-	boolean validateDate(LocalDate dateFrom, LocalDate dateTo) {
-    	if (validateDate(dateFrom) && validateDate(dateTo) && (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo))) {
-    		return true;
-    	}	
-    	Alerter.notValidDateAlert();
-    	return false;
-	}
+
 	
 	
 	// Add countries that can be checked for user input
@@ -388,8 +368,6 @@ public class Controller {
     
     // Disable Dates that are out of range
     void setMinMaxOfDatePicker(){
-    	LocalDate minDate = Collections.min(dateLists);
-    	LocalDate maxDate = Collections.max(dateLists);
 //    	tableA
     	tableA_datePicker.setDayCellFactory(d ->
     	           new DateCell() {
@@ -424,9 +402,7 @@ public class Controller {
     @FXML
     void tableA_disableUnavailableCountry() {
     	LocalDate dateSelected = tableA_datePicker.getValue();
-    	if (!validateDate(dateSelected)) {
-    		return;
-    	}
+    	validateDate(dateSelected, dateSelected, minDate, maxDate);
     	tableA_countryCheckbox.forEach(checkbox -> {
     		ArrayList<LocalDate> dateList = countryDateMap.get(checkbox.getText());
     		if (!DataAnalysis.isBetween(dateSelected, dateList.get(0), dateList.get(1))) {
@@ -442,9 +418,7 @@ public class Controller {
     void chartA_disableUnavailableCountry() {
     	LocalDate dateFrom = chartA_datePickerFrom.getValue();
     	LocalDate dateTo = chartA_datePickerTo.getValue();
-    	if (!validateDate(dateFrom, dateTo)) {
-    		return;
-    	}
+    	validateDate(dateFrom, dateTo, minDate, maxDate);
     	chartA_countryCheckbox.forEach(checkbox -> {
     		ArrayList<LocalDate> dateList = countryDateMap.get(checkbox.getText());
     		if (!DataAnalysis.isBetween(dateFrom, dateList.get(2), dateList.get(3)) && !DataAnalysis.isBetween(dateTo, dateList.get(2), dateList.get(3))) {
@@ -475,11 +449,7 @@ public class Controller {
     	LocalDate dateFrom = LocalDate.of(2020, 3, 1);
     	int offset = (int) Math.round(worldmapA_dateSlider.getValue());
     	LocalDate selectedDate = dateFrom.plusDays(offset);
-    	textAreaConsole.setText(selectedDate.toString());
     	
-//    	worldmapA_polygonMap.forEach((continent, image) -> {
-//    		
-//    	});
     	LinkedHashMap<String, Double> continentMap = worldmapA_dateContinentMap.get(selectedDate);
     	continentMap.forEach((continent, confirmedCases) ->{
     		worldMapA_changeColor(worldmapA_polygonMap.get(continent), confirmedCases);
@@ -488,7 +458,7 @@ public class Controller {
     }
     
     void worldMapA_changeColor(Polygon image, double confirmedCases) {
-    	Color color = getColorByConfirmedCases(confirmedCases); 
+    	Color color = DataAnalysis.getColorByConfirmedCases(confirmedCases); 
     	image.setFill(color);
     }
     void worldmapA_setPolygonMap() {
@@ -506,45 +476,31 @@ public class Controller {
     	});
     	
     }
-
-    Color getColorByConfirmedCases(double confirmedCases) {
-    	double r, g, b;
-    	if (confirmedCases < 10) {
-    		r = 202; g = 235; b = 248;
+    
+	public static boolean validateListSize(int countrySize, int dataSize) {
+		if (!DataAnalysis.validateSize(countrySize)) {
+    		Alerter.noCountrySelectedAlert();
+    		return false;
     	}
-    	else if (confirmedCases < 50) {
-    		r = 170; g = 221; b = 244;
+    	else if (!DataAnalysis.validateSize(dataSize)) {
+			Alerter.noDataAlert();
+    		return false;
     	}
-    	else if (confirmedCases < 100) {
-    		r = 140; g = 201; b = 235;
+		return true;
+	}
+	
+	public static boolean validateDate(LocalDate dateFrom, LocalDate dateTo, LocalDate minDate, LocalDate maxDate) {
+		if (!DataAnalysis.validateDateInOrder(dateFrom, dateTo)) {
+    		Alerter.dateNotInOrderAlert();
+    		return false;
     	}
-    	else if (confirmedCases < 500) {
-    		r = 112; g = 182; b = 225;
+    	else if (!DataAnalysis.validateDateInRange(dateFrom, minDate, maxDate) || !DataAnalysis.validateDateInRange(dateTo, minDate, maxDate)) {
+    		Alerter.dateNotInRangeAlert();
+    		return false;
     	}
-    	else if (confirmedCases < 1000) {
-    		r = 89; g = 158; b = 209;
-    	}
-    	else if (confirmedCases < 3000) {
-    		r = 65; g = 128; b = 190;
-    	}
-    	else if (confirmedCases < 5000) {
-    		r = 49; g = 104; b = 174;
-    	}
-    	else if (confirmedCases < 10000) {
-    		r = 30; g = 80; b = 153;
-    	}
-    	else if (confirmedCases < 20000) {
-    		r = 40; g = 61; b = 117;
-    	}
-    	else if (confirmedCases < 40000) {
-    		r = 30; g = 41; b = 87;
-    	}
-    	else {
-    		r = 20; g = 31; b = 67;
-    	}
-    	
-    	return new Color(r/255, g/255, b/255, 1);
-    }
+		return true;
+	}
+    
     
 }
 
