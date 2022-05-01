@@ -506,7 +506,7 @@ public class Controller {
     	});
     	
     }
-    
+
     Color getColorByConfirmedCases(double confirmedCases) {
     	double r, g, b;
     	if (confirmedCases < 10) {

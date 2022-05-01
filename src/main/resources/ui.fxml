@@ -46,7 +46,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                  <Tab fx:id="tabReport1" text="Table A">
+                  <Tab fx:id="tabReport1" onSelectionChanged="#clearTableA" text="Table A">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="719.0">
                            <children>
@@ -110,7 +110,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
-                  <Tab fx:id="tabApp1" text="Chart A">
+                  <Tab fx:id="tabApp1" onSelectionChanged="#clearChartA" text="Chart A">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="305.0" prefWidth="997.0">
                            <children>
@@ -205,6 +205,11 @@
                                     <ImageView fitHeight="426.0" fitWidth="785.0" layoutX="115.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@worldmap/worldmap_background.png" />
+                                       </image>
+                                    </ImageView>
+                                    <ImageView fitHeight="426.0" fitWidth="124.0" layoutX="833.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@worldmap/distribution_bar.png" />
                                        </image>
                                     </ImageView>
                                  </children>
