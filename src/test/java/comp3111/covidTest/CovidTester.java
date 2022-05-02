@@ -1,9 +1,6 @@
 package comp3111.covidTest;
 
 import static org.junit.Assert.*;
-import static org.testfx.api.FxAssert.*;
-import static org.testfx.matcher.control.LabeledMatchers.*;
-import org.testfx.framework.junit.ApplicationTest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +11,6 @@ import org.junit.Test;
 
 import comp3111.covid.ConfirmedCase;
 import comp3111.covid.DataAnalysis;
-import comp3111.covid.Controller;
 
 import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
@@ -111,7 +107,7 @@ public class CovidTester {
 	}
 	@Test	
 	public void formatNumber_invalid() {	
-		assertEquals(DataAnalysis.formatNumberWithComma("asfw"), "0");	
+		assertEquals(DataAnalysis.formatNumberWithComma("asfw"), "N/A");	
 	}
 	
 //	getConfirmedCases()
@@ -248,21 +244,6 @@ public class CovidTester {
 	public void validateSize_invalidDataSize() {
 		assertFalse(DataAnalysis.validateSize(0));
 	}
-	
-//	validateInput()
-//	@Test
-//	public void validateInput_valid1() {
-//		assertTrue(DataAnalysis.validateInput(10, LocalDate.of(2020, 4, 5), LocalDate.of(2020, 4, 5), LocalDate.of(2020, 4, 1), LocalDate.of(2020, 4, 30), 10));
-//	}
-//	@Test
-//	public void validateInput_valid2() {
-//		assertTrue(DataAnalysis.validateInput(10, LocalDate.of(2020, 4, 5), LocalDate.of(2020, 4, 7), LocalDate.of(2020, 4, 1), LocalDate.of(2020, 4, 30), 10));
-//	}
-//	@Test
-//	public void validateInput_invalid1() {
-//		assertFalse(DataAnalysis.validateInput(10, LocalDate.of(2020, 4, 5), LocalDate.of(2020, 4, 7), LocalDate.of(2020, 4, 1), LocalDate.of(2020, 4, 30), 10));
-//	}
-
 
 	@Test
 	public void colorTest1() {
