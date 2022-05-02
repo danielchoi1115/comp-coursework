@@ -69,7 +69,7 @@ import javafx.scene.shape.Polygon;
  * 
  */
 public class Controller {
-
+	
     @FXML
     private Tab tabReport1;
 
@@ -102,81 +102,6 @@ public class Controller {
     }
     
     private ObservableList<String> list = FXCollections.observableArrayList();
-      
-     public void initialize() {
-    	String isoCode = "";
-    	String isowithCountry = "";
-    	String continent = "";
-    	for (CSVRecord rec : DataAnalysis.getFileParser("COVID_Dataset_v1.0.csv")){
-    		if(!rec.get("iso_code").equals(isoCode)) {
-    			isoCode = rec.get("iso_code");
-    			continent = rec.get("continent");
-    			isowithCountry = continent + " - " + rec.get("location");
-    			list.add(isowithCountry);
-    		}
-    	}
-    	
-    	//comboCountries.setItems(list);
-    	//comboCountries1.setItems(list);
-    	
-    	/****************************MainTree********************************/
-    	AddColumns(list);
-        MainTree.setRoot(root);
-        MainTree.setShowRoot(true);
-        
-        MainTree2.setRoot(root);
-        MainTree2.setShowRoot(true);
-        
-        root.setExpanded(true);       
-       
-        MainTree.setCellFactory(CheckBoxTreeCell.forTreeView());
-        //MainTree.setCellFactory(p-> new CheckBoxTreeCell()); 
-    	//MainTree.setCellFactory(p-> new CheckBoxTreeCell()); 
-        MainTree2.setCellFactory(CheckBoxTreeCell.forTreeView());
-        
-        MainTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        MainTree2.setCellFactory(CheckBoxTreeCell.forTreeView());
-        /*MainTree.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-              @Override
-              public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-
-                  CheckBoxTreeItem<String> treeItem = (CheckBoxTreeItem)newValue;
-
-              }
-          });*/
-        
-        
-         
-       
-        root.addEventHandler(CheckBoxTreeItem.checkBoxSelectionChangedEvent(),(CheckBoxTreeItem.TreeModificationEvent<String>evt)-> {
-           
-            CheckBoxTreeItem<String> item = evt.getTreeItem();
-
-            if (evt.wasIndeterminateChanged()) {
-                if (item.isIndeterminate()) {
-                    selected.remove(item);
-                } else if (item.isSelected()) {
-                    selected.add(item);
-                }
-            } else if (evt.wasSelectionChanged()) {
-                if (item.isSelected()) {
-                    selected.add(item);
-                } else {
-                    selected.remove(item);
-                }
-            }
-            
-        });
-        
-        MainTree.getSelectionModel().selectedItemProperty().addListener(
-                new ChangeListener<TreeItem <String>>() {
-                @Override
-                public void changed(ObservableValue<? extends TreeItem<String>> observableValue,
-                TreeItem<String> oldItem, TreeItem<String> newItem) {
-                    System.out.println("getSelectionModel:"+newItem.getValue());
-                }
-            });
-    }
     
     @FXML
     private Button buttonDeathTable;
@@ -304,6 +229,77 @@ public class Controller {
     	worldmapA_setSlider();
     	worldmapA_dateContinentMap = DataAnalysis.getDateContinentMap();
     	worldmapA_setPolygonMap();
+
+    	String isoCode = "";
+    	String isowithCountry = "";
+    	String continent = "";
+    	for (CSVRecord rec : DataAnalysis.getFileParser("COVID_Dataset_v1.0.csv")){
+    		if(!rec.get("iso_code").equals(isoCode)) {
+    			isoCode = rec.get("iso_code");
+    			continent = rec.get("continent");
+    			isowithCountry = continent + " - " + rec.get("location");
+    			list.add(isowithCountry);
+    		}
+    	}
+
+    	//comboCountries.setItems(list);
+    	//comboCountries1.setItems(list);
+    	
+    	/****************************MainTree********************************/
+    	AddColumns(list);
+        MainTree.setRoot(root);
+        MainTree.setShowRoot(true);
+        
+        MainTree2.setRoot(root);
+        MainTree2.setShowRoot(true);
+        
+        root.setExpanded(true);       
+
+        MainTree.setCellFactory(CheckBoxTreeCell.forTreeView());
+        //MainTree.setCellFactory(p-> new CheckBoxTreeCell()); 
+    	//MainTree.setCellFactory(p-> new CheckBoxTreeCell()); 
+        MainTree2.setCellFactory(CheckBoxTreeCell.forTreeView());
+        
+        MainTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        MainTree2.setCellFactory(CheckBoxTreeCell.forTreeView());
+        /*MainTree.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+              @Override
+              public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+
+                  CheckBoxTreeItem<String> treeItem = (CheckBoxTreeItem)newValue;
+
+              }
+          });*/
+        
+       
+        root.addEventHandler(CheckBoxTreeItem.checkBoxSelectionChangedEvent(),(CheckBoxTreeItem.TreeModificationEvent<String>evt)-> {
+           
+            CheckBoxTreeItem<String> item = evt.getTreeItem();
+
+            if (evt.wasIndeterminateChanged()) {
+                if (item.isIndeterminate()) {
+                    selected.remove(item);
+                } else if (item.isSelected()) {
+                    selected.add(item);
+                }
+            } else if (evt.wasSelectionChanged()) {
+                if (item.isSelected()) {
+                    selected.add(item);
+                } else {
+                    selected.remove(item);
+                }
+            }
+            
+        });
+        
+        MainTree.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<TreeItem <String>>() {
+                @Override
+                public void changed(ObservableValue<? extends TreeItem<String>> observableValue,
+                TreeItem<String> oldItem, TreeItem<String> newItem) {
+                    System.out.println("getSelectionModel:"+newItem.getValue());
+                }
+            });
     }
     
     /**
@@ -454,6 +450,8 @@ public class Controller {
 				});
 				seriesList.add(series);
 			});
+			
+			chartA_lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
 			chartA_lineChart.setData(seriesList);
 		}
 	}
@@ -681,8 +679,10 @@ public class Controller {
         }
         return sub;
     }
-
-
+    /**
+     * This method is used in dynamically disable a checkbox of a country when it is not available on a selected date for Table A.
+     */
+    @FXML
     void tableA_disableUnavailableCountry() {
     	LocalDate dateSelected = tableA_datePicker.getValue();
     	validateDate(dateSelected, dateSelected, minDate, maxDate);

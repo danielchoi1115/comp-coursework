@@ -335,7 +335,44 @@ public class DataAnalysis {
 		 return dateContinentMap;
 	 }
 	
-	 
+	 public static String getRateOfTotalDeaths(String date, List<String> allCountry) {
+			String oReport = "";	
+		  for(String continent:allCountry) {
+			    Double fullyVaccinated = 0D;
+				long totalNumRecord = 0;
+				Double population = 0D;
+			for (CSVRecord rec : getFileParser("COVID_Dataset_v1.0.csv")) {
+				if (!rec.get("iso_code").equals("")) {
+					String s0=rec.get("date");
+					String c1=rec.get("location");
+				    String cparam=continent.split("-")[1].trim();
+				if(date==null || s0.equals(date) && cparam.equals(c1.trim())) {	
+					String s1 = rec.get("total_deaths");
+					String s2 = rec.get("total_deaths_per_million");		
+					if (!s1.equals("")) {
+						fullyVaccinated = Double.parseDouble(s1);
+						fullyVaccinated=fullyVaccinated+fullyVaccinated;
+					}
+					if (!s2.equals("")) {
+						population = Double.parseDouble(s2);
+						population=population+population;
+					}
+
+					totalNumRecord++;
+				}		
+
+				}
+			}
+
+			oReport += "----------------"+continent+"----------------------\n";
+			oReport += String.format("date (%s): %,d Records\n\n", date, totalNumRecord);
+			oReport += String.format("[continent (%s)]\n", continent);
+			oReport += "Number of total_deaths : "+fullyVaccinated.toString()+"\n";
+			oReport += "total_deaths_per_million: "+population.toString()+"\n";
+			//oReport += "----------------------------------------------------\n";
+			}
+		    return oReport;
+	 }
 	 public static Map<String,Double>  getRateOfChart(String sdate,String edate,List<String> allCountry) {
 			String format="yyyy-MM-dd";
 			 long lsdate=gettimeStemp(sdate,format); 

@@ -26,14 +26,10 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-
-<VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
-
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.text.Font?>
 
 <VBox prefHeight="679.0" prefWidth="1008.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
-
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="536.0" prefWidth="1008.0">
       <children>
@@ -77,6 +73,7 @@
                         </AnchorPane>
                     </content>
                   </Tab>
+
                 <Tab fx:id="tabReport2" text="Table B">
                   <content>
                         <AnchorPane>
@@ -107,6 +104,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
+                
                   <Tab fx:id="tabReport3" text="Table C">
                     <content>
                         <AnchorPane>
