@@ -1,5 +1,16 @@
 package comp3111.covid;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
+import edu.duke.FileResource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -323,7 +334,75 @@ public class DataAnalysis {
 		 }
 		 return dateContinentMap;
 	 }
+	
 	 
+	 public static Map<String,Double>  getRateOfChart(String sdate,String edate,List<String> allCountry) {
+			String format="yyyy-MM-dd";
+			 long lsdate=gettimeStemp(sdate,format); 
+			 long ledate=gettimeStemp(edate,format);
+			 Map<String,Double> map=new HashMap<String,Double>();		
+			for(String continent:allCountry) {
+				 Double population = 0D;
+				 Double fullyVaccinated = 0D;
+				 long totalNumRecord = 0;
+			for (CSVRecord rec : getFileParser("COVID_Dataset_v1.0.csv")) {
+				if (!rec.get("iso_code").equals("")) {
+					String s0=rec.get("date");
+					String c1=rec.get("location");
+				    String cparam=continent.split("-")[1].trim();
+				     //2/24/2020
+				    String[] arrayDate=s0.split("/");
+				    s0=arrayDate[2]+"-"+(Integer.parseInt(arrayDate[0])<10?"0"+arrayDate[0]:arrayDate[0])+"-"+(Integer.parseInt(arrayDate[1])<10?"0"+arrayDate[1]:arrayDate[1]);
+				    long ldate=gettimeStemp(s0,format);   
+				if(lsdate<=ldate && ldate<=ledate && cparam.equals(c1.trim())) {	
+					String s1 = rec.get("total_deaths");
+					String s2 = rec.get("total_deaths_per_million");		
+					if (!s1.equals("")) {
+						fullyVaccinated = Double.parseDouble(s1);
+					}
+					if (!s2.equals("")) {
+						population = Double.parseDouble(s2);
+						Double dd=map.get(cparam);
+						if(dd==null) {
+						map.put(cparam, population);
+						}else {
+							dd=dd+population;
+							map.put(cparam, dd);	
+						}
+					}
+					
+					totalNumRecord++;
+				}		
+				
+				}
+			  }
+			}
+			
+			return map;
+	 }
+	 
+	 
+	 public static long gettimeStemp(String time, String format) {
+		 
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			if (!"".equals(format)) {
+				simpleDateFormat = new SimpleDateFormat(format);
+			}
+	 
+			long timeStemp = 0;
+			try {
+	 
+				Date date = simpleDateFormat.parse(time);
+	 
+				timeStemp = date.getTime();
+	 
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			return timeStemp;
+		}
+ 
+
 	 /**
 	  * This method validates that the first date is not after the second date
 	  *

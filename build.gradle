@@ -6,8 +6,14 @@ plugins {
 }
 
 repositories {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        mavenLocal()
+        mavenCentral()
+    }
     mavenCentral()
 }
+
 
 task debug(type:JavaExec) {
 	group 'application'
@@ -29,6 +35,10 @@ dependencies {
 	
     testImplementation 'junit:junit:4.12'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+}
+
+jacoco{
+	toolVersion = "0.8.7"
 }
 
 jacocoTestReport {
