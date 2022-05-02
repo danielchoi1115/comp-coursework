@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
@@ -9,8 +11,12 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
+<VBox prefHeight="679.0" prefWidth="719.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="comp3111.covid.Controller">
   <children>
     <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="437.0" prefWidth="719.0">
       <children>
@@ -48,7 +54,24 @@
                            <children>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="450.0" prefWidth="722.0">
                                  <children>
-                                    <TextArea layoutX="14.0" layoutY="14.0" prefHeight="315.0" prefWidth="695.0" text="Task B1: Generate data tables showing the number of confirmed COVID-19 deaths by country&#10;&#10;Input&#10;•&#9;Specify the date of interest&#10;•&#9;Specify the countries of interest&#10;&#10;Output&#10;•&#9;Label the data table with a proper title: &quot;Number of Confirmed COVID-19 Deaths as of [Date of Interest]&quot;&#10;•&#9;Present data in 3 columns with proper headings of &quot;Country&quot;, &quot;Total Deaths&quot;, and &quot;Total Deaths (per 1M)&quot;&#10;•&#9;Present data for the countries of interest in rows&#10;&#10;" wrapText="true" />
+                                    <Label layoutX="61.0" layoutY="93.0" text="Dataset" />
+                                    <TextField fx:id="textfieldDataset1" layoutX="162.0" layoutY="88.0" prefHeight="26.0" prefWidth="159.0" text="COVID_Dataset_v1.0.csv" />
+                                    <Label layoutX="26.0" layoutY="144.0" prefHeight="18.0" prefWidth="114.0" text="Countries&amp;Regions" />
+                                    <DatePicker fx:id="datepickerDate" layoutX="120.0" layoutY="213.0" prefHeight="23.0" prefWidth="258.0" promptText="Between 2020-03-01 and 2021-07-20" />
+                                    <Label layoutX="69.0" layoutY="217.0" prefHeight="15.0" prefWidth="28.0" text="Date" />
+                                    
+                                    <VBox layoutX="163.0" layoutY="142.0"  prefHeight="36.0" prefWidth="188.0" BorderPane.alignment="CENTER" >
+									         <children>
+									            <TreeView fx:id="MainTree"  prefHeight="36.0" prefWidth="188.0" />
+									         </children>
+								      </VBox>
+                                    
+                                    <Button fx:id="buttonDeathTable" layoutX="520.0" layoutY="153.0" mnemonicParsing="false" onAction="#generateTable" text="Generate Table" />
+                                    <Label layoutX="55.0" layoutY="21.0" text="This page generates a chart showing the confirmed deaths on a date of interest">
+                                       <font>
+                                          <Font name="Arial Black" size="14.0" />
+                                       </font>
+                                    </Label>
                                  </children>
                               </AnchorPane>
                            </children>
@@ -81,7 +104,27 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <TextArea layoutX="14.0" layoutY="14.0" prefHeight="290.0" prefWidth="694.0" text="Task B2: Generate data charts showing the cumulative confirmed COVID-19 deaths (per 1M) by country&#10;&#10;Input&#10;•&#9;Specify the period of interest&#10;•&#9;Specify the countries of interest&#10;&#10;Output&#10;•&#9;Label the data chart with a proper title: &quot;Cumulative Confirmed COVID-19 Deaths (per 1M)&quot;&#10;•&#9;Label the x-axis and y-axis with proper scales&#10;•&#9;Present data in coloured cumulative curves labelled with corresponding countries&#10;&#10;" wrapText="true" />
+                              <Label layoutX="67.0" layoutY="91.0" text="Dataset" />
+                              <TextField fx:id="textfieldDataset2" layoutX="171.0" layoutY="85.0" prefHeight="26.0" prefWidth="159.0" text="COVID_Dataset_v1.0.csv" />
+                              <Label layoutX="32.0" layoutY="132.0" prefHeight="18.0" prefWidth="114.0" text="Countries&amp;Regions" />
+                             
+                             
+                              <VBox layoutX="172.0" layoutY="129.0" prefHeight="36.0" prefWidth="188.0" BorderPane.alignment="CENTER" >
+									         <children>
+									            <TreeView fx:id="MainTree2"  prefHeight="36.0" prefWidth="188.0" />
+									         </children>
+								      </VBox>
+                             
+                              <Label layoutX="54.0" layoutY="209.0" prefHeight="15.0" prefWidth="70.0" text="Date Period" />
+                              <DatePicker fx:id="dateStart" layoutX="138.0" layoutY="185.0" prefHeight="23.0" prefWidth="256.0" promptText="Between 2020-03-01 and 2021-07-20" />
+                              <DatePicker fx:id="dateEnd" layoutX="138.0" layoutY="224.0" prefHeight="23.0" prefWidth="256.0" promptText="Between 2020-03-01 and 2021-07-20" />
+                              <Label layoutX="251.0" layoutY="209.0" text="To" />
+                              <Button fx:id="buttonDeathChart" layoutX="514.0" layoutY="141.0" mnemonicParsing="false" onAction="#generateChart" text="Generate Chart" />
+                              <Label layoutX="14.0" layoutY="14.0" text="This page generates a chart showing the cumulative deaths per 1M population of a period  ">
+                                 <font>
+                                    <Font name="Arial Black" size="14.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </AnchorPane>
                     </content>
