@@ -1,32 +1,65 @@
 package comp3111.covid;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.csv.CSVRecord;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
+
+import javafx.scene.control.CheckBoxTreeItem;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
+
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+
 
 /**
  * 
@@ -36,13 +69,43 @@ import javafx.scene.shape.Polygon;
  * 
  */
 public class Controller {
-
+	
     @FXML
     private Tab tabReport1;
 
     @FXML
     private Tab tabReport2;
 
+    @FXML
+    private TextField textfieldDataset1;
+    
+    @FXML
+    private DatePicker datepickerDate;
+    
+    
+   
+    @FXML
+    private TreeView<String> MainTree;
+    
+   
+    CheckBoxTreeItem<String> root = new CheckBoxTreeItem<String>("all country");
+    
+    Set<TreeItem<String>> selected = new HashSet<TreeItem<String>>();
+
+
+    private void AddColumns(ObservableList<String> list){
+
+        for (String country:list){
+            CheckBoxTreeItem<String> itemColumn = new CheckBoxTreeItem<String>(country);
+            root.getChildren().add(itemColumn);
+        }
+    }
+    
+    private ObservableList<String> list = FXCollections.observableArrayList();
+    
+    @FXML
+    private Button buttonDeathTable;
+    
     @FXML
     private Tab tabReport3;
 
@@ -52,6 +115,23 @@ public class Controller {
     @FXML
     private Tab tabApp2;
 
+    @FXML
+    private TextField textfieldDataset2;
+    
+    //@FXML
+    //private ComboBox<String> comboCountries1;
+    @FXML
+    private TreeView<String> MainTree2;
+    
+    @FXML
+    private DatePicker dateStart;
+    
+    @FXML
+    private DatePicker dateEnd;
+    
+    @FXML
+    private Button buttonDeathChart;
+    
     @FXML
     private Tab tabApp3;
 
@@ -149,6 +229,77 @@ public class Controller {
     	worldmapA_setSlider();
     	worldmapA_dateContinentMap = DataAnalysis.getDateContinentMap();
     	worldmapA_setPolygonMap();
+
+    	String isoCode = "";
+    	String isowithCountry = "";
+    	String continent = "";
+    	for (CSVRecord rec : DataAnalysis.getFileParser("COVID_Dataset_v1.0.csv")){
+    		if(!rec.get("iso_code").equals(isoCode)) {
+    			isoCode = rec.get("iso_code");
+    			continent = rec.get("continent");
+    			isowithCountry = continent + " - " + rec.get("location");
+    			list.add(isowithCountry);
+    		}
+    	}
+
+    	//comboCountries.setItems(list);
+    	//comboCountries1.setItems(list);
+    	
+    	/****************************MainTree********************************/
+    	AddColumns(list);
+        MainTree.setRoot(root);
+        MainTree.setShowRoot(true);
+        
+        MainTree2.setRoot(root);
+        MainTree2.setShowRoot(true);
+        
+        root.setExpanded(true);       
+
+        MainTree.setCellFactory(CheckBoxTreeCell.forTreeView());
+        //MainTree.setCellFactory(p-> new CheckBoxTreeCell()); 
+    	//MainTree.setCellFactory(p-> new CheckBoxTreeCell()); 
+        MainTree2.setCellFactory(CheckBoxTreeCell.forTreeView());
+        
+        MainTree.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        MainTree2.setCellFactory(CheckBoxTreeCell.forTreeView());
+        /*MainTree.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+              @Override
+              public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+
+                  CheckBoxTreeItem<String> treeItem = (CheckBoxTreeItem)newValue;
+
+              }
+          });*/
+        
+       
+        root.addEventHandler(CheckBoxTreeItem.checkBoxSelectionChangedEvent(),(CheckBoxTreeItem.TreeModificationEvent<String>evt)-> {
+           
+            CheckBoxTreeItem<String> item = evt.getTreeItem();
+
+            if (evt.wasIndeterminateChanged()) {
+                if (item.isIndeterminate()) {
+                    selected.remove(item);
+                } else if (item.isSelected()) {
+                    selected.add(item);
+                }
+            } else if (evt.wasSelectionChanged()) {
+                if (item.isSelected()) {
+                    selected.add(item);
+                } else {
+                    selected.remove(item);
+                }
+            }
+            
+        });
+        
+        MainTree.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<TreeItem <String>>() {
+                @Override
+                public void changed(ObservableValue<? extends TreeItem<String>> observableValue,
+                TreeItem<String> oldItem, TreeItem<String> newItem) {
+                    System.out.println("getSelectionModel:"+newItem.getValue());
+                }
+            });
     }
     
     /**
@@ -299,6 +450,8 @@ public class Controller {
 				});
 				seriesList.add(series);
 			});
+			
+			chartA_lineChart.setAxisSortingPolicy(LineChart.SortingPolicy.X_AXIS);
 			chartA_lineChart.setData(seriesList);
 			
 			chartA_xAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(chartA_xAxis) {             
@@ -402,6 +555,159 @@ public class Controller {
 	
 	
 	
+    /**
+     * This method is used in dynamically disable a checkbox of a country when it is not available on a selected date for Table A.
+     */
+
+    @FXML
+    public void generateTable(ActionEvent event) {
+    	System.out.println("generateTable");
+    	 
+    	 List<String> allCountry=new ArrayList<String>();
+    	 selected.stream().map(TreeItem::getValue).forEach(c->{
+    		 allCountry.add(c);
+    	 });
+    	 
+    	 
+    	 if(selected.size()>=11) {
+     		FxAlert.show("Please country&region max 10");
+         	return;
+    	 }
+    	 
+    	
+    	
+    	if(selected.size()==0) {
+    		//
+    		FxAlert.show("Please select at least one country&region");
+        	return;
+        }
+        LocalDate l=datepickerDate.getValue();
+        String date=null;
+        if(l!=null) {
+	    	int year=l.getYear();
+	    	int month=l.getMonthValue();
+	    	int day=l.getDayOfMonth();
+	    	date=month+"/"+day+"/"+year;
+	    	//date=(month<10?"0"+month:month)+"/"+(day<10?"0"+day:day)+"/"+year;
+        }
+    	String oReport = DataAnalysis.getRateOfTotalDeaths(date, allCountry);
+    	textAreaConsole.setText(oReport);
+    }
+    
+    @FXML
+    public void generateChart(ActionEvent event) {
+    	System.out.println("generateChart");
+    	
+    	List<String> allCountry=new ArrayList<String>();
+   	 selected.stream().map(TreeItem::getValue).forEach(c->{
+   		 allCountry.add(c);
+   	 });
+   	 
+   	 
+   	 if(selected.size()>=10) {
+    		FxAlert.show("Please country&region max 10");
+        	return;
+   	 }
+   	 
+   	
+   	
+   	if(selected.size()==0) {
+   		//
+   		FxAlert.show("Please select at least one country&region");
+       	return;
+       }
+    	
+    	 LocalDate l1=dateStart.getValue();
+         String ssdate=null;
+         if(l1!=null) {
+ 	    	int year=l1.getYear();
+ 	    	int month=l1.getMonthValue();
+ 	    	int day=l1.getDayOfMonth();
+ 	    	ssdate=year+"-"+(month<10?"0"+month:month)+"-"+(day<10?"0"+day:day);
+         }else {
+        	 FxAlert.show("Please select dateStart");
+         	return;
+         }
+         
+         LocalDate l2=dateEnd.getValue();
+         String eedate=null;
+         if(l2!=null) {
+ 	    	int year=l2.getYear();
+ 	    	int month=l2.getMonthValue();
+ 	    	int day=l2.getDayOfMonth();
+ 	    	eedate=year+"-"+(month<10?"0"+month:month)+"-"+(day<10?"0"+day:day);
+         }else {
+        	 FxAlert.show("Please select dateEnd");
+         	return;
+         }
+         
+         
+         //Please select a valid start/end date(2020-03-01 to 2021-07-20)
+         long day=subDaysByDate(ssdate,eedate);
+         if(day>30 ||day<=0 ) {
+        	 FxAlert.show(String.format("Please select a valid start/end date(%s to %s)",ssdate,eedate));
+          	return;
+         }
+         
+       
+         CategoryAxis xAxis = new CategoryAxis();
+         NumberAxis yAxis = new NumberAxis();//1, 100, 10
+         
+         xAxis.setLabel("country");
+         yAxis.setLabel("total deaths");
+         
+         LineChart linechart = new LineChart(xAxis, yAxis);
+         
+         XYChart.Series series = new XYChart.Series();
+         Map<String,Double> map=DataAnalysis.getRateOfChart(ssdate,eedate, allCountry);
+         for (String key : map.keySet()) {
+        	    Double value = map.get(key);
+        	    System.out.println("Key = " + key + ", Value = " + value);
+        	    series.getData().add(new XYChart.Data(key, value));
+         }	
+     
+         
+         series.setName("totald eaths per million");
+         
+         linechart.getData().add(series);
+         
+         StackPane pane = new StackPane(linechart);
+         pane.setPadding(new Insets(15, 15, 15, 15));
+         pane.setStyle("-fx-background-color: BEIGE");
+            Stage stage=new Stage();
+    		Scene scene =  new Scene(pane);
+    		stage.setScene(scene);
+    		stage.setTitle("Cumulative Confirmed COVID-19 Deaths(per 1M)");
+    		stage.show();
+    		
+    		
+    		
+
+    }
+    
+    
+    /**
+     * How to get the difference in days between two dates
+     *
+     * @param startDate String storing the start date
+     * @param endDate String storing the end date
+     * @return The difference in days, return -1 if parsing fails
+     **/
+    public static long subDaysByDate(String startDate, String endDate) {
+    	String DATE_PATTERN ="yyyy-MM-dd";// ;
+        long sub;
+        try {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+            LocalDate start = LocalDate.parse(startDate, dateTimeFormatter);
+            LocalDate end = LocalDate.parse(endDate, dateTimeFormatter);
+ 
+            sub = end.toEpochDay() - start.toEpochDay();
+        } catch (DateTimeParseException e) {
+        	e.printStackTrace();
+            sub = -1;
+        }
+        return sub;
+    }
     /**
      * This method is used in dynamically disable a checkbox of a country when it is not available on a selected date for Table A.
      */
@@ -553,7 +859,7 @@ public class Controller {
     	}
 		return true;
 	}
-    
+   
     
 }
 
