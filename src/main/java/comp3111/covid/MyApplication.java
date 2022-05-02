@@ -35,7 +35,7 @@ public class MyApplication extends Application {
 
     private static final String UI_FILE = "/ui.fxml";  //file in the folder of src/main/resources/
 	
-	/** 
+    /** 
 	 * @see javafx.application.Application#start(javafx.stage.Stage)
 	 * 
 	 * This function will be called by the framework shortly after the program started. You are not required to change any line of code below.
@@ -47,7 +47,7 @@ public class MyApplication extends Application {
    		VBox root = (VBox) loader.load();
    		Scene scene =  new Scene(root);
    		stage.setScene(scene);
-   		stage.setTitle("bracnch partB");
+   		stage.setTitle("Super Team T-29: Data Explorer on COVID-19");
    		stage.show();
 	}
 
