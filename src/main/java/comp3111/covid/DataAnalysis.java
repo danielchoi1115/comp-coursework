@@ -298,6 +298,30 @@ public class DataAnalysis {
 		 }
 	 }
 	 
+	 /**
+	  * This method converts a {@code LocalDate} to {@code Number} Object corresponding to Epochday. 
+	  *
+	  * @param date This is the date that is to be converted into Epoch Day
+	  * @return {@code Number} This returns a {@code Number} which represents epoch day of {@code date}.
+	  */
+	 public static Number localDatetoEpochNumber(LocalDate date) {
+		 return (Number) date.toEpochDay();
+	 }
+	 
+	 /**
+	  * This method converts a {@code long} to date String. 
+	  *
+	  * @param number This is the number corresponding to the epoch day of the date that is to be converted.
+	  * @return {@code String} This returns a {@code String} date in the form of MMM dd, yyyy.
+	  */
+	 public static String epochToDateString(long number) {
+		 String dateString = LocalDate.ofEpochDay(number).format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+
+		 System.out.println(number);
+		 System.out.println(dateString);
+		 
+		 return dateString;
+	 }
 	 
 	 /**
 	  * This method is used to get the total cases per million of a continent on different dates.

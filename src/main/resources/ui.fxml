@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -15,7 +14,6 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -39,12 +37,15 @@
                                     <DatePicker fx:id="tableA_datePicker" layoutX="1.0" layoutY="47.0" onAction="#tableA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
                    
                                     <ListView fx:id="tableA_countryCheckBoxList" layoutX="2.0" layoutY="120.0" prefHeight="200.0" prefWidth="200.0" />
-                                    <Button fx:id="displayTableA" layoutX="2.0" layoutY="335.0" mnemonicParsing="false" onAction="#doDisplayTableA" prefHeight="42.0" prefWidth="200.0" text="Display" />
+                                    <Button fx:id="displayTableA" layoutX="2.0" layoutY="335.0" mnemonicParsing="false" onAction="#doDisplayTableA" prefHeight="42.0" prefWidth="200.0" text="Display">
+                                       <font>
+                                          <Font name="Calibri" size="18.0" />
+                                       </font></Button>
                                     <Label layoutY="77.0" text="Countries">
                                        <font>
                                           <Font size="16.0" />
                                        </font></Label>
-                                    <Label layoutY="29.0" text="Date">
+                                    <Label layoutY="22.0" text="Date">
                                        <font>
                                           <Font size="16.0" />
                                        </font></Label>
@@ -57,10 +58,13 @@
                                     </TableView>
                                     <Label layoutX="227.0" layoutY="14.0" prefHeight="29.0" prefWidth="532.0" text="Number of Confirmed COVID-19 cases" textAlignment="CENTER">
                                        <font>
-                                          <Font name="Times New Roman" size="18.0" />
+                                          <Font name="Calibri" size="24.0" />
                                        </font>
                                     </Label>
-                                    <Button fx:id="clearTableA" layoutX="2.0" layoutY="384.0" mnemonicParsing="false" onAction="#clearTableA" prefHeight="42.0" prefWidth="200.0" text="Reset" />
+                                    <Button fx:id="clearTableA" layoutX="2.0" layoutY="384.0" mnemonicParsing="false" onAction="#clearTableA" prefHeight="42.0" prefWidth="200.0" text="Reset">
+                                       <font>
+                                          <Font name="Calibri" size="18.0" />
+                                       </font></Button>
                                     <CheckBox fx:id="tableA_selectAllCheckBox" layoutX="2.0" layoutY="102.0" mnemonicParsing="false" onAction="#tableA_selectAll" text="Select All" />
                                  </children>
                               </Pane>
@@ -98,42 +102,48 @@
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="305.0" prefWidth="997.0">
                            <children>
-                              <Pane layoutX="17.0" layoutY="12.0" prefHeight="476.0" prefWidth="964.0">
+                              <Pane layoutX="17.0" layoutY="12.0" prefHeight="476.0" prefWidth="976.0">
                                  <children>
-                                    <ListView fx:id="chartA_countryCheckBoxList" layoutX="1.0" layoutY="128.0" prefHeight="177.0" prefWidth="200.0" />
-                                    <Button fx:id="displayChartA" layoutX="2.0" layoutY="325.0" mnemonicParsing="false" onAction="#doDisplayChartA" prefHeight="42.0" prefWidth="200.0" text="Display" />
-                                    <Label layoutY="87.0" text="Countries">
+                                    <ListView fx:id="chartA_countryCheckBoxList" layoutX="1.0" layoutY="139.0" prefHeight="177.0" prefWidth="200.0" />
+                                    <Button fx:id="displayChartA" layoutX="2.0" layoutY="336.0" mnemonicParsing="false" onAction="#doDisplayChartA" prefHeight="42.0" prefWidth="200.0" text="Display">
+                                       <font>
+                                          <Font name="Calibri" size="18.0" />
+                                       </font></Button>
+                                    <Label layoutY="98.0" text="Countries">
                                        <font>
                                           <Font size="16.0" />
                                        </font></Label>
-                                    <Label text="Date From">
+                                    <Label layoutY="-4.0" text="Date From">
                                        <font>
                                           <Font size="16.0" />
                                        </font></Label>
-                                    <DatePicker fx:id="chartA_datePickerFrom" layoutX="1.0" layoutY="18.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
-                                    <Label layoutX="1.0" layoutY="42.0" text="Date To">
+                                    <DatePicker fx:id="chartA_datePickerFrom" layoutX="1.0" layoutY="19.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                                    <Label layoutX="1.0" layoutY="46.0" text="Date To">
                                        <font>
                                           <Font size="16.0" />
                                        </font></Label>
-                                    <DatePicker fx:id="chartA_datePickerTo" layoutX="2.0" layoutY="60.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
-                                    <LineChart fx:id="chartA_lineChart" layoutX="228.0" layoutY="6.0" prefHeight="468.0" prefWidth="736.0">
+                                    <DatePicker fx:id="chartA_datePickerTo" layoutX="2.0" layoutY="70.0" onAction="#chartA_disableUnavailableCountry" prefHeight="22.0" prefWidth="199.0" />
+                                    <LineChart fx:id="chartA_lineChart" layoutX="216.0" layoutY="6.0" prefHeight="468.0" prefWidth="739.0" title="Cumulative Confirmed COVID-19 Cases (per 1M)">
                                       <xAxis>
-                                        <CategoryAxis fx:id="chartA_xAxis" prefWidth="688.0" side="BOTTOM">
+                                        <NumberAxis fx:id="chartA_xAxis" animated="false" autoRanging="false" prefWidth="688.0" side="BOTTOM" tickUnit="20.0">
                                              <tickLabelFont>
-                                                <Font size="10.0" />
+                                                <Font name="Calibri" size="16.0" />
                                              </tickLabelFont>
-                                          </CategoryAxis>
+                                          </NumberAxis>
                                       </xAxis>
                                       <yAxis>
-                                        <NumberAxis fx:id="chartA_yAxis" minorTickLength="0.0" side="LEFT" tickUnit="1.0" upperBound="5.0">
+                                        <NumberAxis fx:id="chartA_yAxis" minorTickLength="0.0" side="LEFT" tickLabelsVisible="false" tickUnit="1.0" upperBound="5.0">
                                              <tickLabelFont>
-                                                <Font size="10.0" />
+                                                <Font size="15.0" />
                                              </tickLabelFont>
                                           </NumberAxis>
                                       </yAxis>
                                     </LineChart>
-                                    <Button fx:id="clearChartA" layoutX="1.0" layoutY="371.0" mnemonicParsing="false" onAction="#clearChartA" prefHeight="42.0" prefWidth="200.0" text="Reset" />
-                                    <CheckBox fx:id="chartA_selectAllCheckBox" layoutX="1.0" layoutY="110.0" mnemonicParsing="false" onAction="#chartA_selectAll" text="Select All" />
+                                    <Button fx:id="clearChartA" layoutX="1.0" layoutY="387.0" mnemonicParsing="false" onAction="#clearChartA" prefHeight="42.0" prefWidth="200.0" text="Reset">
+                                       <font>
+                                          <Font name="Calibri" size="18.0" />
+                                       </font></Button>
+                                    <CheckBox fx:id="chartA_selectAllCheckBox" layoutX="1.0" layoutY="121.0" mnemonicParsing="false" onAction="#chartA_selectAll" text="Select All" />
                                  </children>
                               </Pane>
                            </children>
@@ -163,9 +173,9 @@
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
                               <Slider fx:id="worldmapA_dateSlider" layoutX="198.0" layoutY="492.0" onValueChange="#worldMapA_setColor" prefHeight="14.0" prefWidth="591.0" />
-                              <Label layoutX="108.0" layoutY="20.0" prefHeight="29.0" prefWidth="772.0" text="WorldWide Cumulative Confirmed COVID-19 cases per million people, Jul 20, 2021" textAlignment="CENTER">
+                              <Label layoutX="87.0" layoutY="21.0" prefHeight="29.0" prefWidth="814.0" text="WorldWide Cumulative Confirmed COVID-19 cases per million people, Jul 20, 2021" textAlignment="CENTER">
                                  <font>
-                                    <Font name="Times New Roman" size="22.0" />
+                                    <Font name="Calibri" size="24.0" />
                                  </font>
                               </Label>
                               <Label layoutX="125.0" layoutY="492.0" text="Mar 01. 2020">

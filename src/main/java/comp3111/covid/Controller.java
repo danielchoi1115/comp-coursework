@@ -11,7 +11,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -89,7 +88,7 @@ public class Controller {
     
 //    Chart A
     @FXML
-    private LineChart<String, Number> chartA_lineChart; 
+    private LineChart<Number, Number> chartA_lineChart; 
     private ObservableList<CheckBox> chartA_countryCheckbox = FXCollections.observableArrayList();
     @FXML
     private DatePicker chartA_datePickerFrom;
@@ -104,7 +103,7 @@ public class Controller {
     @FXML
     private Button clearChartA;
     @FXML
-    private CategoryAxis chartA_xAxis ;
+    private NumberAxis chartA_xAxis ;
     @FXML
     private NumberAxis chartA_yAxis ;
 
@@ -288,19 +287,44 @@ public class Controller {
 
 		LinkedHashMap<String, LinkedHashMap<LocalDate, Double>> cumulativeMap = DataAnalysis.getCumulativeMap(selectedCountries, dateFrom, dateTo);
 		if (validateListSize(selectedCountries.size(), cumulativeMap.size()) && validateDate(dateFrom, dateTo, minDate, maxDate)) {
-		    chartA_lineChart.setTitle("Cumulative Confirmed COVID-19 Cases (per 1M)");
-			ObservableList<XYChart.Series<String, Number>> seriesList = FXCollections.observableArrayList();
+			ObservableList<XYChart.Series<Number, Number>> seriesList = FXCollections.observableArrayList();
 			
 			cumulativeMap.forEach((countryName, dateMapList) -> {
-				XYChart.Series<String, Number> series = new XYChart.Series<String, Number>();
+				XYChart.Series<Number, Number> series = new XYChart.Series<Number, Number>();
 				series.setName(countryName);
 				dateMapList.forEach((date, totalConfirmedCase) -> {
 					Number record = (Number) totalConfirmedCase;
-					series.getData().add(new XYChart.Data<String, Number>(date.toString(), record)) ;
+					Number epochDate = DataAnalysis.localDatetoEpochNumber(date);
+					series.getData().add(new XYChart.Data<Number, Number>(epochDate, record)) ;
 				});
 				seriesList.add(series);
 			});
 			chartA_lineChart.setData(seriesList);
+			
+			chartA_xAxis.setTickLabelFormatter(new NumberAxis.DefaultFormatter(chartA_xAxis) {             
+					@Override             
+					public String toString(Number object) {      
+						return DataAnalysis.epochToDateString(object.longValue());              
+					}
+				});
+	    	
+	    	long min = 99999;
+	    	long max = 0;
+	    	
+	    	for(XYChart.Series<Number, Number> series: seriesList) {
+	    		for(XYChart.Data<Number, Number> data: series.getData()) {
+	    			long temp = data.getXValue().longValue();
+	    			min = temp < min ? temp : min;
+	    			max = temp > max ? temp : max;
+	    		}
+	    	}
+	    	
+			chartA_xAxis.setAutoRanging(false);
+			chartA_xAxis.setTickUnit(Math.ceil((max-min)/7));
+			chartA_xAxis.setLowerBound(min);
+			chartA_xAxis.setUpperBound(max);
+			chartA_xAxis.setTickLabelsVisible(true);
+			chartA_yAxis.setTickLabelsVisible(true);
 		}
 	}
 	
@@ -337,6 +361,10 @@ public class Controller {
 		chartA_datePickerTo.setValue(maxDate);
 		chartA_datePickerFrom.setValue(maxDate);
 		chartA_selectAllCheckBox.setSelected(false);
+		chartA_xAxis.setTickLabelsVisible(false);
+		chartA_yAxis.setTickLabelsVisible(false);
+		chartA_xAxis.setLowerBound(0);
+		chartA_xAxis.setUpperBound(100);
 	}
 	
 	/**
