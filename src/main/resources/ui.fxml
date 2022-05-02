@@ -30,22 +30,6 @@
       <children>
             <TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="535.0" prefWidth="997.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab fx:id="tabTaskZero" text="Task Zero">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="221.0" prefWidth="719.0">
-                           <children>
-                              <Label layoutX="114.0" layoutY="68.0" prefHeight="18.0" prefWidth="58.0" text="ISO Code" />
-                              <TextField fx:id="textfieldISO" layoutX="185.0" layoutY="64.0" prefHeight="26.0" prefWidth="43.0" promptText="e.g 1830 (18: yr 18-19; 30: Spring)" text="HKG" />
-                              <Button fx:id="buttonConfirmedDeaths" layoutX="303.0" layoutY="134.0" mnemonicParsing="false" onAction="#doConfirmedDeaths" text="Confirmed Deaths" />
-                              <Label layoutX="114.0" layoutY="36.0" text="Dataset" />
-                              <TextField fx:id="textfieldDataset" layoutX="185.0" layoutY="32.0" prefHeight="26.0" prefWidth="149.0" text="COVID_Dataset_v1.0.csv" />
-                              <Label layoutX="114.0" layoutY="138.0" text="Report" />
-                              <Button fx:id="buttonRateOfVaccination" layoutX="423.0" layoutY="134.0" mnemonicParsing="false" onAction="#doRateOfVaccination" text="Rate of Vaccination" />
-                              <Button fx:id="buttonConfirmedCases" layoutX="185.0" layoutY="134.0" mnemonicParsing="false" onAction="#doConfirmedCases" text="Confirmed Cases" />
-                           </children>
-                        </AnchorPane>
-                  </content>
-                </Tab>
                   <Tab fx:id="tabReport1" onSelectionChanged="#clearTableA" text="Table A">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="384.0" prefWidth="719.0">
