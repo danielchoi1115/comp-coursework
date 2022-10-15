@@ -1,0 +1,6 @@
+total 56K
+drwxr-xr-x 2 schoiak cscourse  166 Oct 16 16:15 input_test_cases
+-rwxr-xr-x 1 schoiak cscourse  23K Oct 16 16:24 myshell
+-rw-r--r-- 1 schoiak cscourse 6.0K Oct 16 16:24 myshell.c
+-rwxr--r-- 1 schoiak cscourse  23K Oct 16 16:19 sp_myshell
+-rw------- 1 schoiak cscourse    0 Oct 16 16:26 tmp_out_only.txt
