@@ -10,6 +10,9 @@ test <- Weekly[!train_range,]
 train_y <- train$Direction
 test_y <- test$Direction
 
+train_x <- as.matrix(train$Lag2)
+train_x <- cbind(train$Lag2, sqrt(abs(train$Lag1)))
+test_x <- as.matrix(test$Lag2, sqrt(abs(train$Lag1)))
 
 bayes_fit <- naive_bayes(train_y ~ Lag2, data = train) 
 pred <- predict(bayes_fit, test)
