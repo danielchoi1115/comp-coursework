@@ -1,0 +1,10 @@
+./page_replacement < input_and_output/in01.txt > myout01.txt
+./page_replacement < input_and_output/in02.txt > myout02.txt
+./page_replacement < input_and_output/in03.txt > myout03.txt
+./page_replacement < input_and_output/in04.txt > myout04.txt
+./page_replacement < input_and_output/in05.txt > myout05.txt
+./page_replacement < input_and_output/in06.txt > myout06.txt
+./page_replacement < input_and_output/in07.txt > myout07.txt
+./page_replacement < input_and_output/in08.txt > myout08.txt
+./page_replacement < input_and_output/in09.txt > myout09.txt
+./page_replacement < input_and_output/in10.txt > myout10.txt
