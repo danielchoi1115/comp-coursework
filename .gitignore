@@ -40,3 +40,15 @@ venv*
 *.csv
 *.txt
 *.wav
+MATH-4432-Statistical-Machine-Learning-main
+MATH4432/HW4/.Rhistory
+*.aux
+*.bbl
+*.fdb_latexmk
+*.fls
+*.out
+*.gz
+*.blg
+
+MATH4432/*/*.html
+.submissions
