@@ -1,7 +1,6 @@
 __pycache__/
 Lecture Notes/
 Midterm/
-imdb.csv
 glove.6B.100d.txt.gz
 task.zip
 task_data.zip
@@ -52,3 +51,5 @@ MATH4432/HW4/.Rhistory
 
 MATH4432/*/*.html
 .submissions
+COMP2211/*/*.ipynb
+MATH4992/*.ipynb
