@@ -48,8 +48,8 @@ MATH4432/HW4/.Rhistory
 *.out
 *.gz
 *.blg
+*.h5
 
 MATH4432/*/*.html
 .submissions
-COMP2211/*/*.ipynb
-MATH4992/*.ipynb
+*.ipynb
